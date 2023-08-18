@@ -3,7 +3,6 @@
 
 #include "World/PM_ActorPoolerSubsystem.h"
 
-#include "ProjectMetronome.h"
 #include "World/PM_PoolableActorInterface.h"
 
 bool UPM_ActorPoolerSubsystem::ShouldCreateSubsystem(UObject* Outer) const
@@ -25,12 +24,12 @@ bool UPM_ActorPoolerSubsystem::CreateActor(const TSubclassOf<AActor> ActorClass,
 		UE_LOG(FPM_LogWorld, Error, TEXT("UPM_ActorPoolerSubsystem: Invalid world, failed to create actor."));
 		return false;
 	}
-	
+
 	if (!ActorInstanceMap.Contains(ActorClass)) ActorInstanceMap.Add(ActorClass, FPM_ActorInstanceContainer());
 	for (uint8 i = 0; i < Amount; i++)
 	{
 		AActor* SpawnedActor = CurrentWorld->SpawnActor(ActorClass);
-		ActorInstanceMap[ActorClass].InactiveActors.Enqueue(SpawnedActor);
+		ActorInstanceMap[ActorClass].AddInactiveActor(SpawnedActor);
 	}
 	
 	return true;
@@ -50,17 +49,19 @@ AActor* UPM_ActorPoolerSubsystem::RequestActor(const TSubclassOf<AActor> ActorCl
 		else return nullptr;
 	}
 
-	if (ActorInstanceMap[ActorClass].InactiveActors.IsEmpty())
+	if (!ActorInstanceMap[ActorClass].HasInactiveActors())
 	{
 		if (bAutoRefill) CreateActor(ActorClass);
 		else return nullptr;
 	}
-	
+
 	return ActorInstanceMap[ActorClass].ActivateNewActor();
 }
 
 bool UPM_ActorPoolerSubsystem::ReturnActor(AActor* Actor)
 {
+	if (!IsValid(Actor)) return false;
+	
 	UClass* ActorClass = Actor->GetClass();
 	if (!ActorInstanceMap.Contains(ActorClass))
 	{

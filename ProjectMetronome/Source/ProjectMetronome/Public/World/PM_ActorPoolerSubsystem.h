@@ -13,18 +13,20 @@ struct FPM_ActorInstanceContainer
 {
 	GENERATED_BODY()
 
-	friend class UPM_ActorPoolerSubsystem;
-	
 public:
+	FORCEINLINE bool HasInactiveActors() const { return !InactiveActors.IsEmpty(); }
+	FORCEINLINE void AddInactiveActor(AActor* InactiveActor) { InactiveActors.Add(InactiveActor); }
+	
 	AActor* ActivateNewActor()
 	{
-		TObjectPtr<AActor> ActiveActor;
-		if (!InactiveActors.Dequeue(ActiveActor)) return nullptr;
+		if (InactiveActors.Num() <= 0) return nullptr;
+		const TObjectPtr<AActor> ActiveActor = InactiveActors[0];
+		InactiveActors.RemoveAt(0);
 		ActiveActors.Add(ActiveActor);
 		Cast<IPM_PoolableActorInterface>(ActiveActor)->SetActive(true);
 		return ActiveActor;
 	}
-
+	
 	void DeactivateActor(AActor* ActorToDeactivate)
 	{
 		IPM_PoolableActorInterface* PoolableActor = Cast<IPM_PoolableActorInterface>(ActorToDeactivate);
@@ -36,11 +38,11 @@ public:
 
 		PoolableActor->SetActive(false);
 		ActiveActors.Remove(ActorToDeactivate);
-		InactiveActors.Enqueue(ActorToDeactivate);
+		InactiveActors.Add(ActorToDeactivate);
 	}
 
 private:
-	TQueue<TObjectPtr<AActor>> InactiveActors;
+	TArray<TObjectPtr<AActor>> InactiveActors;
 	TArray<TObjectPtr<AActor>> ActiveActors;
 };
 
