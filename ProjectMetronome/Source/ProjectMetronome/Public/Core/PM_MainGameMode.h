@@ -13,5 +13,7 @@ UCLASS()
 class PROJECTMETRONOME_API APM_MainGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
-	
+
+public:
+	APM_MainGameMode();
 };
