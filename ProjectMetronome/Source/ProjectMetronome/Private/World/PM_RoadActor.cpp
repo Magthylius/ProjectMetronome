@@ -5,6 +5,9 @@
 
 APM_RoadActor::APM_RoadActor()
 {
+	GetStaticMeshComponent()->SetEnableGravity(false);
+	GetStaticMeshComponent()->SetMobility(EComponentMobility::Movable);
+	GetStaticMeshComponent()->SetSimulatePhysics(false);
 }
 
 void APM_RoadActor::BeginPlay()
@@ -16,8 +19,7 @@ void APM_RoadActor::BeginPlay()
 void APM_RoadActor::SetActive(const bool bActiveState)
 {
 	bIsActive = bActiveState;
-	SetActorHiddenInGame(bActiveState);
+	SetActorHiddenInGame(!bActiveState);
 	SetActorEnableCollision(bActiveState);
-	GetStaticMeshComponent()->SetSimulatePhysics(bActiveState);
 }
 

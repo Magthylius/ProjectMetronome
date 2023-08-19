@@ -29,7 +29,7 @@ void UPM_RoadSubsystem::StartSubsystem(APM_MainPawn* InPlayerPawn, const FPM_Roa
 	RoadTileDistance = InitData.RoadTileDistance;
 	for (int i = 0; i < InitData.RoadTileAmount; i++)
 	{
-		APM_RoadActor* RoadActor = PoolerSubsystem->RequestActor<APM_RoadActor>();
+		APM_RoadActor* RoadActor = Cast<APM_RoadActor>(PoolerSubsystem->RequestActor(InitData.RoadClass));
 		RoadActor->SetActorLocation(FVector(0.f, RoadTileDistance * i, 0.f));
 	}
 }

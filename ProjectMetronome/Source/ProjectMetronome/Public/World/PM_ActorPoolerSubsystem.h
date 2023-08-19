@@ -61,6 +61,7 @@ public:
 
 	bool CreateActor(const TSubclassOf<AActor> ActorClass, const uint8 Amount = 1);
 
+	/* TODO: Does not account for derived classes. */
 	template<typename TActor>
 	TActor* RequestActor(const bool bAutoRefill = true)
 	{
