@@ -7,8 +7,11 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/Pawn.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "InputMappingContext.h"
+#include "InputAction.h"
 #include "PM_MainPawn.generated.h"
 
+/* Player's main pawn. */
 UCLASS()
 class PROJECTMETRONOME_API APM_MainPawn : public APawn
 {
@@ -36,4 +39,11 @@ private:
 	TObjectPtr<USpringArmComponent> CameraBoom;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess))
 	TObjectPtr<UPM_DriveMovementComponent> DriveMovementComponent;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input References", meta = (AllowPrivateAccess))
+	TObjectPtr<UInputMappingContext> PlayerMappingContext;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input References", meta = (AllowPrivateAccess))
+	TObjectPtr<UInputAction> PlayerMoveAction;
+
+	void OnPerformMove(const FInputActionValue& InputValue);
 };

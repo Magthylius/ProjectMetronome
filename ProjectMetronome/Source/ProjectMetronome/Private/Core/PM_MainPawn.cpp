@@ -2,6 +2,12 @@
 
 
 #include "Core/PM_MainPawn.h"
+#include "EnhancedInputComponent.h"
+#include "EnhancedInputSubsystems.h"
+#include "ProjectMetronome.h"
+#include "Core/PM_MainPlayerController.h"
+#include "Shell/PM_GameSettings.h"
+#include "Shell/PM_LogUtil.h"
 
 /* --- PUBLIC --- */
 
@@ -34,6 +40,11 @@ APM_MainPawn::APM_MainPawn()
 void APM_MainPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+
+	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent))
+	{
+		EnhancedInputComponent->BindAction(PlayerMoveAction, ETriggerEvent::Triggered, this, &APM_MainPawn::OnPerformMove);
+	}
 }
 
 /* --- PROTECTED --- */
@@ -41,15 +52,37 @@ void APM_MainPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 void APM_MainPawn::BeginPlay()
 {
 	Super::BeginPlay();
+
+	const APM_MainPlayerController* MainPlayerController = GetController<APM_MainPlayerController>();
+	if (!ensure(IsValid(MainPlayerController)))
+	{
+		UE_LOG(LogPMCore, Error, TEXT("APM_MainPawn: Invalid main player controller."));
+		return;
+	}
+	
+	UEnhancedInputLocalPlayerSubsystem* InputSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(MainPlayerController->GetLocalPlayer());
+	if (!ensure(IsValid(InputSubsystem)))
+	{
+		UE_LOG(LogPMCore, Error, TEXT("APM_MainPawn: Invalid input subsystem."));
+		return;
+	}
+
+	InputSubsystem->AddMappingContext(PlayerMappingContext, 0);
+	DriveMovementComponent->MaxSpeed = FPM_GameSettings::PlayerSpeed;
+	DriveMovementComponent->Acceleration = FPM_GameSettings::PlayerAcceleration;
 }
 
 void APM_MainPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	AddMovementInput(FVector::ForwardVector);
+	AddActorLocalOffset(FVector::ForwardVector * FPM_GameSettings::ForwardSpeed);
 }
 
 /* --- PRIVATE --- */
 
-
+void APM_MainPawn::OnPerformMove(const FInputActionValue& InputValue)
+{
+	const float MoveInput = InputValue.Get<float>();
+	AddMovementInput(FVector::LeftVector * MoveInput);
+}

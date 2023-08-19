@@ -4,12 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
+#include "Shell/PM_GameSettings.h"
 #include "World/PM_RoadSubsystem.h"
 #include "PM_GameInstance.generated.h"
 
-/**
- * 
- */
+/* Custom game instance class to hold global references and settings. */
 UCLASS()
 class PROJECTMETRONOME_API UPM_GameInstance : public UGameInstance
 {
@@ -17,8 +16,11 @@ class PROJECTMETRONOME_API UPM_GameInstance : public UGameInstance
 
 public:
 	FORCEINLINE FPM_RoadSubsystemInitData GetRoadSubsystemInitData() const { return RoadSubsystemInitData; }
+	FORCEINLINE FPM_GameSettings GetGameSettings() const { return GameSettings; }
 
 private:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Road Settings", meta = (AllowPrivateAccess))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess))
 	FPM_RoadSubsystemInitData RoadSubsystemInitData;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess))
+	FPM_GameSettings GameSettings;
 };

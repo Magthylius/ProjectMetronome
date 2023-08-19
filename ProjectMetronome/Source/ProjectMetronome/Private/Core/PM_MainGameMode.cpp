@@ -33,6 +33,8 @@ void APM_MainGameMode::PostLogin(APlayerController* NewPlayer)
 		return;
 	}
 
+	PMGameInstance->GetGameSettings().ApplyStatics();
+
 	APM_MainPawn* MainPawn = NewPlayer->GetPawn<APM_MainPawn>();
 	if (!ensure(IsValid(MainPawn)))
 	{

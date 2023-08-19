@@ -28,9 +28,7 @@ public:
 	int RoadFrontBufferIndex = 3;
 };
 
-/**
- * 
- */
+/* Subsystem that handles road tiling and object creation. */
 UCLASS()
 class PROJECTMETRONOME_API UPM_RoadSubsystem : public UTickableWorldSubsystem
 {
@@ -46,7 +44,6 @@ public:
 
 	FORCEINLINE float GetQuantizedPosition(const int OffsetIndex) const;
 
-	
 protected:
 	virtual void Tick(float DeltaTime) override;
 	
