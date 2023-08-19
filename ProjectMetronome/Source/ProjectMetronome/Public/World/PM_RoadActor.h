@@ -16,6 +16,9 @@ class PROJECTMETRONOME_API APM_RoadActor : public AStaticMeshActor, public IPM_P
 public:	
 	APM_RoadActor();
 
+	void AddOwnedActor(AActor* OwnedActor);
+	void ReturnAllOwnedActors();
+	
 protected:
 	virtual void BeginPlay() override;
 	
@@ -23,5 +26,6 @@ protected:
 	virtual bool IsActive() const override { return bIsActive; }
 
 private:
+	TArray<TWeakObjectPtr<AActor>> OwnedActors;
 	bool bIsActive = false;
 };

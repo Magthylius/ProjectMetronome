@@ -81,6 +81,7 @@ void UPM_RoadSubsystem::Tick(float DeltaTime)
 
 		if (RoadActor->GetActorLocation().X > BackBuffer) return;
 
+		RoadActor->ReturnAllOwnedActors();
 		RoadActors.RemoveAt(0);
 		ActorPoolerSubsystem->ReturnActor(RoadActor);
 
@@ -110,12 +111,12 @@ void UPM_RoadSubsystem::SpawnObstacle()
 	}
 	Obstacle->OnMainPawnCollided.AddUObject(this, &UPM_RoadSubsystem::OnObstacleCollided);
 	
-	const APM_RoadActor* LastRoadActor = RoadActors.Last().Get();
-	
+	APM_RoadActor* LastRoadActor = RoadActors.Last().Get();
 	FVector SpawnLocation = LastRoadActor->GetActorLocation();
 	SpawnLocation.X += FMath::RandRange(-InitData.ObstacleSpawnHalfRange.X, InitData.ObstacleSpawnHalfRange.X);
 	SpawnLocation.Y += FMath::RandRange(-InitData.ObstacleSpawnHalfRange.Y, InitData.ObstacleSpawnHalfRange.Y);
 	SpawnLocation.Z = InitData.RoadSurfaceLevel;
+	LastRoadActor->AddOwnedActor(Obstacle);
 
 	Obstacle->SetActorLocation(SpawnLocation);
 }
