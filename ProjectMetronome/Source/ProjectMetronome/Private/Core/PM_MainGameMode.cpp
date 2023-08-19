@@ -6,6 +6,7 @@
 #include "ProjectMetronome.h"
 #include "Core/PM_GameInstance.h"
 #include "Core/PM_MainGameState.h"
+#include "Core/PM_MainHUD.h"
 #include "Core/PM_MainPawn.h"
 #include "Core/PM_MainPlayerController.h"
 
@@ -13,6 +14,7 @@ APM_MainGameMode::APM_MainGameMode()
 {
 	GameStateClass = APM_MainGameState::StaticClass();
 	DefaultPawnClass = APM_MainPawn::StaticClass();
+	HUDClass = APM_MainHUD::StaticClass();
 	PlayerControllerClass = APM_MainPlayerController::StaticClass();
 }
 

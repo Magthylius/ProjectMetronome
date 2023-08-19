@@ -9,6 +9,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "InputMappingContext.h"
 #include "InputAction.h"
+#include "PM_MainHUD.h"
 #include "PM_MainPawn.generated.h"
 
 /* Player's main pawn. */
@@ -41,6 +42,9 @@ private:
 	TObjectPtr<USpringArmComponent> CameraBoom;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess))
 	TObjectPtr<UPM_DriveMovementComponent> DriveMovementComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Runtime Data", meta = (AllowPrivateAccess))
+	TObjectPtr<APM_MainHUD> MainHUD;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input References", meta = (AllowPrivateAccess))
 	TObjectPtr<UInputMappingContext> PlayerMappingContext;

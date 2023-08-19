@@ -7,7 +7,6 @@
 #include "ProjectMetronome.h"
 #include "Core/PM_MainPlayerController.h"
 #include "Shell/PM_GameSettings.h"
-#include "Shell/PM_LogUtil.h"
 
 /* --- PUBLIC --- */
 
@@ -63,6 +62,8 @@ void APM_MainPawn::BeginPlay()
 		UE_LOG(LogPMCore, Error, TEXT("APM_MainPawn: Invalid main player controller."));
 		return;
 	}
+
+	MainHUD = MainPlayerController->GetHUD<APM_MainHUD>();
 	
 	UEnhancedInputLocalPlayerSubsystem* InputSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(MainPlayerController->GetLocalPlayer());
 	if (!ensure(IsValid(InputSubsystem)))
@@ -81,6 +82,9 @@ void APM_MainPawn::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	AddActorLocalOffset(FVector::ForwardVector * FPM_GameSettings::ForwardSpeed);
+
+	if (!IsValid(MainHUD)) return;
+	MainHUD->GetGameHUDWidget()->SetDistance(GetActorLocation().X);
 }
 
 /* --- PRIVATE --- */
