@@ -9,6 +9,7 @@
 #include "Core/PM_MainHUD.h"
 #include "Core/PM_MainPawn.h"
 #include "Core/PM_MainPlayerController.h"
+#include "Shell/PM_ScoreSystem.h"
 
 APM_MainGameMode::APM_MainGameMode()
 {
@@ -36,6 +37,7 @@ void APM_MainGameMode::PostLogin(APlayerController* NewPlayer)
 	}
 
 	PMGameInstance->GetGameSettings().ApplyStatics();
+	FPM_ScoreSystem::ResetStats();
 
 	APM_MainPawn* MainPawn = NewPlayer->GetPawn<APM_MainPawn>();
 	if (!ensure(IsValid(MainPawn)))

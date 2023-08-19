@@ -19,6 +19,9 @@ public:
 	void SetScoring(const float Scoring) const;
 	void SetDistance(const float Distance) const;
 
+protected:
+	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
+
 private:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Components", meta = (BindWidget, AllowPrivateAccess))
 	TObjectPtr<UTextBlock> DistanceTextBlock;

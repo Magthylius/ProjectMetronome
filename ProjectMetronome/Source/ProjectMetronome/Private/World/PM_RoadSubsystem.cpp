@@ -4,6 +4,7 @@
 #include "World/PM_RoadSubsystem.h"
 
 #include "ProjectMetronome.h"
+#include "Shell/PM_ScoreSystem.h"
 #include "World/PM_ActorPoolerSubsystem.h"
 
 /* --- PUBLIC --- */
@@ -123,12 +124,15 @@ void UPM_RoadSubsystem::SpawnObstacle()
 
 void UPM_RoadSubsystem::OnObstacleCollided(APM_RoadObstacleActor* ObstacleActor) const
 {
+	ObstacleActor->OnMainPawnCollided.RemoveAll(this);
+
 	auto ReturnActorDelegate = [this, ObstacleActor]()
 	{
 		ActorPoolerSubsystem->ReturnActor(ObstacleActor);
 	};
 	
-	ObstacleActor->OnMainPawnCollided.RemoveAll(this);
 	FTimerHandle DisposableHandle;
 	GetWorld()->GetTimerManager().SetTimer(DisposableHandle, ReturnActorDelegate, 3.f, false);
+
+	FPM_ScoreSystem::NotifyObstacleHit();
 }

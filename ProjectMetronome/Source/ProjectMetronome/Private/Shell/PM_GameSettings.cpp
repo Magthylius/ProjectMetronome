@@ -8,4 +8,5 @@ void FPM_GameSettings::ApplyStatics() const
 	PlayerSpeed = DefaultPlayerSpeed;
 	PlayerAcceleration = DefaultPlayerAcceleration;
 	ForwardSpeed = DefaultForwardSpeed;
+	ObstaclePenalty = DefaultObstaclePenalty;
 }

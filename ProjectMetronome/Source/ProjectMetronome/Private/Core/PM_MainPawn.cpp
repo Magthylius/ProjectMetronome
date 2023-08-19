@@ -7,6 +7,7 @@
 #include "ProjectMetronome.h"
 #include "Core/PM_MainPlayerController.h"
 #include "Shell/PM_GameSettings.h"
+#include "Shell/PM_ScoreSystem.h"
 
 /* --- PUBLIC --- */
 
@@ -63,7 +64,7 @@ void APM_MainPawn::BeginPlay()
 		return;
 	}
 
-	MainHUD = MainPlayerController->GetHUD<APM_MainHUD>();
+	APM_MainHUD* MainHUD = MainPlayerController->GetHUD<APM_MainHUD>();
 	
 	UEnhancedInputLocalPlayerSubsystem* InputSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(MainPlayerController->GetLocalPlayer());
 	if (!ensure(IsValid(InputSubsystem)))
@@ -82,9 +83,7 @@ void APM_MainPawn::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	AddActorLocalOffset(FVector::ForwardVector * FPM_GameSettings::ForwardSpeed);
-
-	if (!IsValid(MainHUD)) return;
-	MainHUD->GetGameHUDWidget()->SetDistance(GetActorLocation().X);
+	FPM_ScoreSystem::SetTotalDistance(GetActorLocation().X);
 }
 
 /* --- PRIVATE --- */

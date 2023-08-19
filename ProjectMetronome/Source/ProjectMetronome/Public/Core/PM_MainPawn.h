@@ -43,9 +43,6 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess))
 	TObjectPtr<UPM_DriveMovementComponent> DriveMovementComponent;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Runtime Data", meta = (AllowPrivateAccess))
-	TObjectPtr<APM_MainHUD> MainHUD;
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input References", meta = (AllowPrivateAccess))
 	TObjectPtr<UInputMappingContext> PlayerMappingContext;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input References", meta = (AllowPrivateAccess))
