@@ -16,4 +16,7 @@ class PROJECTMETRONOME_API APM_MainGameMode : public AGameModeBase
 
 public:
 	APM_MainGameMode();
+
+protected:
+	virtual void BeginPlay() override;
 };

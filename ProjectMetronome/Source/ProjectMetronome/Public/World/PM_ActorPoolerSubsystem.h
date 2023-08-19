@@ -60,7 +60,16 @@ public:
 	virtual bool ShouldCreateSubsystem(UObject* Outer) const override;
 
 	bool CreateActor(const TSubclassOf<AActor> ActorClass, const uint8 Amount = 1);
+
+	template<typename TActor>
+	TActor* RequestActor(const bool bAutoRefill = true)
+	{
+		AActor* RequestedActor = RequestActor(TActor::StaticClass(), bAutoRefill);
+		return Cast<TActor>(RequestedActor);
+	}
+	
 	AActor* RequestActor(const TSubclassOf<AActor> ActorClass, const bool bAutoRefill = true);
+	
 	bool ReturnActor(AActor* Actor);
 
 private:
