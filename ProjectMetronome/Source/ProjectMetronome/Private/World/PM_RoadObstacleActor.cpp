@@ -28,5 +28,6 @@ void APM_RoadObstacleActor::OnActorWasHit(AActor* SelfActor, AActor* OtherActor,
 	{
 		MainPawn->TakeSlowDamage(GetSlowDamage());
 		OnMainPawnHit(MainPawn);
+		OnMainPawnCollided.Broadcast(this);
 	}
 }

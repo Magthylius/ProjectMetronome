@@ -79,4 +79,6 @@ private:
 	float NextObstacleSpawnTime = -1.f;
 
 	void SpawnObstacle();
+
+	void OnObstacleCollided(APM_RoadObstacleActor* ObstacleActor) const;
 };

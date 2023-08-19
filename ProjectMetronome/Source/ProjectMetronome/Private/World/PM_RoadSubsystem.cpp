@@ -101,8 +101,15 @@ void UPM_RoadSubsystem::Tick(float DeltaTime)
 void UPM_RoadSubsystem::SpawnObstacle()
 {
 	const TSubclassOf<APM_RoadObstacleActor> ObstacleClass = InitData.RoadObstacleTypes[FMath::RandRange(0, InitData.RoadObstacleTypes.Num() - 1)];
+	
 	APM_RoadObstacleActor* Obstacle = ActorPoolerSubsystem->RequestActor<APM_RoadObstacleActor>(ObstacleClass, true);
-
+	if (!IsValid(Obstacle))
+	{
+		UE_LOG(LogPMWorld, Warning, TEXT("UPM_RoadSubsystem: Cannot spawn more obstacles, limit reached."));
+		return;
+	}
+	Obstacle->OnMainPawnCollided.AddUObject(this, &UPM_RoadSubsystem::OnObstacleCollided);
+	
 	const APM_RoadActor* LastRoadActor = RoadActors.Last().Get();
 	
 	FVector SpawnLocation = LastRoadActor->GetActorLocation();
@@ -111,4 +118,16 @@ void UPM_RoadSubsystem::SpawnObstacle()
 	SpawnLocation.Z = InitData.RoadSurfaceLevel;
 
 	Obstacle->SetActorLocation(SpawnLocation);
+}
+
+void UPM_RoadSubsystem::OnObstacleCollided(APM_RoadObstacleActor* ObstacleActor) const
+{
+	auto ReturnActorDelegate = [this, ObstacleActor]()
+	{
+		ActorPoolerSubsystem->ReturnActor(ObstacleActor);
+	};
+	
+	ObstacleActor->OnMainPawnCollided.RemoveAll(this);
+	FTimerHandle DisposableHandle;
+	GetWorld()->GetTimerManager().SetTimer(DisposableHandle, ReturnActorDelegate, 3.f, false);
 }

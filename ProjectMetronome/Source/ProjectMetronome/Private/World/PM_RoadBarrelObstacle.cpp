@@ -25,6 +25,8 @@ void APM_RoadBarrelObstacle::SetActive(const bool bActiveState)
 	}
 
 	BodyStaticMesh->SetSimulatePhysics(bActiveState);
+	BodyStaticMesh->SetPhysicsLinearVelocity(FVector::ZeroVector);
+	BodyStaticMesh->SetPhysicsAngularVelocityInDegrees(FVector::ZeroVector);
 }
 
 void APM_RoadBarrelObstacle::OnMainPawnHit(APM_MainPawn* MainPawn)
