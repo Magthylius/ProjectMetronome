@@ -12,9 +12,9 @@ APM_MainPawn::APM_MainPawn()
 
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>("CameraBoom");
 	CameraBoom->SetUsingAbsoluteRotation(true);
-	CameraBoom->SetRelativeRotation(FRotator(-80.f, 0.f, 0.f));
+	CameraBoom->SetRelativeRotation(FRotator(-90.f, 0.f, 0.f));
 	CameraBoom->SetupAttachment(RootComponent);
-	CameraBoom->TargetArmLength = 1600.f;
+	CameraBoom->TargetArmLength = 3500.f;
 
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("TopDownCamera"));
 	CameraComponent->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
