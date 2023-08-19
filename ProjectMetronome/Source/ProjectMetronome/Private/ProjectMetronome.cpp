@@ -6,4 +6,4 @@
 IMPLEMENT_PRIMARY_GAME_MODULE( FDefaultGameModuleImpl, ProjectMetronome, "ProjectMetronome" );
 
 DEFINE_LOG_CATEGORY(LogPMCore);
-DEFINE_LOG_CATEGORY(FPM_LogWorld);
+DEFINE_LOG_CATEGORY(LogPMWorld);

@@ -47,6 +47,10 @@ void APM_MainPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	}
 }
 
+void APM_MainPawn::TakeSlowDamage(const float SlowDamage)
+{
+}
+
 /* --- PROTECTED --- */
 
 void APM_MainPawn::BeginPlay()

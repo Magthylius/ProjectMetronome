@@ -10,18 +10,18 @@ bool UPM_ActorPoolerSubsystem::ShouldCreateSubsystem(UObject* Outer) const
 	return Super::ShouldCreateSubsystem(Outer);
 }
 
-bool UPM_ActorPoolerSubsystem::CreateActor(const TSubclassOf<AActor> ActorClass, const uint8 Amount)
+bool UPM_ActorPoolerSubsystem::CreateActors(const TSubclassOf<AActor> ActorClass, const uint8 Amount)
 {
 	if (!ensure(IsValid(ActorClass)) || !ensure(ActorClass->ImplementsInterface(UPM_PoolableActorInterface::StaticClass())))
 	{
-		UE_LOG(FPM_LogWorld, Error, TEXT("UPM_ActorPoolerSubsystem: Invalid actor class, failed to create actor."));
+		UE_LOG(LogPMWorld, Error, TEXT("UPM_ActorPoolerSubsystem: Invalid actor class, failed to create actor."));
 		return false;
 	}
 	
 	UWorld* CurrentWorld = GetWorld();
 	if (!ensure(IsValid(CurrentWorld)))
 	{
-		UE_LOG(FPM_LogWorld, Error, TEXT("UPM_ActorPoolerSubsystem: Invalid world, failed to create actor."));
+		UE_LOG(LogPMWorld, Error, TEXT("UPM_ActorPoolerSubsystem: Invalid world, failed to create actor."));
 		return false;
 	}
 
@@ -29,6 +29,7 @@ bool UPM_ActorPoolerSubsystem::CreateActor(const TSubclassOf<AActor> ActorClass,
 	for (uint8 i = 0; i < Amount; i++)
 	{
 		AActor* SpawnedActor = CurrentWorld->SpawnActor(ActorClass);
+		Cast<IPM_PoolableActorInterface>(SpawnedActor)->SetActive(false);
 		ActorInstanceMap[ActorClass].AddInactiveActor(SpawnedActor);
 	}
 	
@@ -39,19 +40,19 @@ AActor* UPM_ActorPoolerSubsystem::RequestActor(const TSubclassOf<AActor> ActorCl
 {
 	if (!ensure(IsValid(ActorClass)) || !ensure(ActorClass->ImplementsInterface(UPM_PoolableActorInterface::StaticClass())))
 	{
-		UE_LOG(FPM_LogWorld, Error, TEXT("UPM_ActorPoolerSubsystem: Invalid actor class, failed to request for actor."));
+		UE_LOG(LogPMWorld, Error, TEXT("UPM_ActorPoolerSubsystem: Invalid actor class, failed to request for actor."));
 		return nullptr;
 	}
 
 	if (!ActorInstanceMap.Contains(ActorClass))
 	{
-		if (bAutoRefill) CreateActor(ActorClass);
+		if (bAutoRefill) CreateActors(ActorClass);
 		else return nullptr;
 	}
 
 	if (!ActorInstanceMap[ActorClass].HasInactiveActors())
 	{
-		if (bAutoRefill) CreateActor(ActorClass);
+		if (bAutoRefill) CreateActors(ActorClass);
 		else return nullptr;
 	}
 

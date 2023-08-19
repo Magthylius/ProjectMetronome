@@ -32,7 +32,7 @@ public:
 		IPM_PoolableActorInterface* PoolableActor = Cast<IPM_PoolableActorInterface>(ActorToDeactivate);
 		if (!ensure(PoolableActor))
 		{
-			UE_LOG(FPM_LogWorld, Warning, TEXT("FPM_ActorInstanceContainer: Tried to deactivate invalid actor."));
+			UE_LOG(LogPMWorld, Warning, TEXT("FPM_ActorInstanceContainer: Tried to deactivate invalid actor."));
 			return;
 		}
 
@@ -59,8 +59,15 @@ public:
 	
 	virtual bool ShouldCreateSubsystem(UObject* Outer) const override;
 
-	bool CreateActor(const TSubclassOf<AActor> ActorClass, const uint8 Amount = 1);
+	bool CreateActors(const TSubclassOf<AActor> ActorClass, const uint8 Amount = 1);
 
+	template<typename TActor>
+	TActor* RequestActor(const TSubclassOf<AActor> ActorClass, const bool bAutoRefill)
+	{
+		AActor* RequestedActor = RequestActor(ActorClass, bAutoRefill);
+		return Cast<TActor>(RequestedActor);
+	}
+	
 	/* TODO: Does not account for derived classes. */
 	template<typename TActor>
 	TActor* RequestActor(const bool bAutoRefill = true)

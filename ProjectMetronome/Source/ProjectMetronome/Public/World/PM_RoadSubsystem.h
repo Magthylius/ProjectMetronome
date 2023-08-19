@@ -3,10 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "PM_ActorPoolerSubsystem.h"
-#include "PM_RoadActor.h"
-#include "Core/PM_MainPawn.h"
 #include "Subsystems/WorldSubsystem.h"
+#include "Core/PM_MainPawn.h"
+#include "World/PM_ActorPoolerSubsystem.h"
+#include "World/PM_RoadActor.h"
+#include "World/PM_RoadObstacleActor.h"
 #include "PM_RoadSubsystem.generated.h"
 
 USTRUCT(BlueprintType)
@@ -15,6 +16,9 @@ struct FPM_RoadSubsystemInitData
 	GENERATED_BODY()
 
 public:
+	UPROPERTY(EditAnywhere)
+	float RoadSurfaceLevel = 200.f;
+	
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<APM_RoadActor> RoadClass;
 	UPROPERTY(EditAnywhere)
@@ -26,6 +30,17 @@ public:
 	float RoadBackBuffer = -5000.f;
 	UPROPERTY(EditAnywhere)
 	int RoadFrontBufferIndex = 3;
+
+	UPROPERTY(EditAnywhere)
+	TArray<TSubclassOf<APM_RoadObstacleActor>> RoadObstacleTypes;
+	UPROPERTY(EditAnywhere)
+	int ObstaclePoolAmount = 5;
+	UPROPERTY(EditAnywhere)
+	float ObstacleStartSpawnDelay = 3.f;
+	UPROPERTY(EditAnywhere)
+	float ObstacleSpawnInterval = 1.f;
+	UPROPERTY(EditAnywhere)
+	FVector2D ObstacleSpawnHalfRange = FVector2D(500.f, 1500.f);
 };
 
 /* Subsystem that handles road tiling and object creation. */
@@ -56,7 +71,12 @@ private:
 	TArray<TWeakObjectPtr<APM_RoadActor>> RoadActors;
 	UPROPERTY(VisibleInstanceOnly)
 	FPM_RoadSubsystemInitData InitData;
-	
+
 	bool bAllowObservation = false;
-	float RoadTileDistance;
+
+	FTimerHandle ObstacleSpawnHandle;
+	bool bAllowObstacleSpawn = false;
+	float NextObstacleSpawnTime = -1.f;
+
+	void SpawnObstacle();
 };

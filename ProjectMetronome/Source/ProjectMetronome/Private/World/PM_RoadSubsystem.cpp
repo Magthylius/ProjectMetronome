@@ -4,7 +4,6 @@
 #include "World/PM_RoadSubsystem.h"
 
 #include "ProjectMetronome.h"
-#include "Shell/PM_LogUtil.h"
 #include "World/PM_ActorPoolerSubsystem.h"
 
 /* --- PUBLIC --- */
@@ -13,31 +12,46 @@ void UPM_RoadSubsystem::StartSubsystem(APM_MainPawn* InPlayerPawn, const FPM_Roa
 {
 	if (!ensure(IsValid(InInitData.RoadClass)))
 	{
-		UE_LOG(FPM_LogWorld, Error, TEXT("UPM_RoadSubsystem: Invalid road class."));
+		UE_LOG(LogPMWorld, Error, TEXT("UPM_RoadSubsystem: Invalid road class."));
 		return;
 	}
 
 	PlayerPawn = InPlayerPawn;
-	
+	InitData = InInitData;
+
 	ActorPoolerSubsystem = GetWorld()->GetSubsystem<UPM_ActorPoolerSubsystem>();
 	if (!ensure(ActorPoolerSubsystem.IsValid()))
 	{
-		UE_LOG(FPM_LogWorld, Error, TEXT("UPM_RoadSubsystem: Invalid pooler subsystem."));
+		UE_LOG(LogPMWorld, Error, TEXT("UPM_RoadSubsystem: Invalid pooler subsystem."));
 		return;
 	}
-	
-	ActorPoolerSubsystem->CreateActor(InInitData.RoadClass, InInitData.RoadTileAmount);
-	
-	RoadTileDistance = InInitData.RoadTileDistance;
-	for (int i = -2; i < InInitData.RoadTileAmount - 2; i++)
-	{
-		APM_RoadActor* RoadActor = Cast<APM_RoadActor>(ActorPoolerSubsystem->RequestActor(InInitData.RoadClass));
-		const FVector Location = FVector::ForwardVector * RoadTileDistance * i;
-		RoadActor->SetActorLocation(Location);
-		RoadActors.Add(RoadActor);
+
+	{ /* Initialize road to drive on. */
+		ActorPoolerSubsystem->CreateActors(InitData.RoadClass, InitData.RoadTileAmount);
+		for (int i = -2; i < InitData.RoadTileAmount - 2; i++)
+		{
+			APM_RoadActor* RoadActor = Cast<APM_RoadActor>(ActorPoolerSubsystem->RequestActor(InitData.RoadClass));
+			const FVector Location = FVector::ForwardVector * InitData.RoadTileDistance * i;
+			RoadActor->SetActorLocation(Location);
+			RoadActors.Add(RoadActor);
+		}
 	}
 
-	InitData = InInitData;
+	{ /* Pool obstacles. */
+		for (int i = 0; i < InitData.RoadObstacleTypes.Num(); ++i)
+		{
+			const TSubclassOf<APM_RoadObstacleActor> ObstacleClass = InitData.RoadObstacleTypes[i];
+			ActorPoolerSubsystem->CreateActors(ObstacleClass, InitData.ObstaclePoolAmount);
+
+			auto AllowObstacleSpawning = [this]
+			{
+				bAllowObstacleSpawn = true;
+			};
+			
+			GetWorld()->GetTimerManager().SetTimer(ObstacleSpawnHandle, AllowObstacleSpawning, InitData.ObstacleStartSpawnDelay, false);
+		}
+	}
+
 	bAllowObservation = true;
 }
 
@@ -55,20 +69,46 @@ void UPM_RoadSubsystem::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (!bAllowObservation || !IsValid(PlayerPawn)) return;
+	const UWorld* CurrentWorld = GetWorld();
+	if (!bAllowObservation || !IsValid(PlayerPawn) || !IsValid(CurrentWorld)) return;
 
-	//! Road actors work in a queue system. That means the first one is always the oldest one.
-	if (RoadActors.Num() <= 0) return;
+	{ /* Road scrolling system. */
+		//! Road actors work in a queue system. That means the first one is always the oldest one.
+		if (RoadActors.Num() <= 0) return;
 
-	const float BackBuffer = PlayerPawn->GetActorLocation().X + InitData.RoadBackBuffer;
-	APM_RoadActor* RoadActor = RoadActors[0].Get();
+		const float BackBuffer = PlayerPawn->GetActorLocation().X + InitData.RoadBackBuffer;
+		APM_RoadActor* RoadActor = RoadActors[0].Get();
 
-	if (RoadActor->GetActorLocation().X > BackBuffer) return;
+		if (RoadActor->GetActorLocation().X > BackBuffer) return;
 
-	RoadActors.RemoveAt(0);
-	ActorPoolerSubsystem->ReturnActor(RoadActor);
+		RoadActors.RemoveAt(0);
+		ActorPoolerSubsystem->ReturnActor(RoadActor);
 
-	APM_RoadActor* NewRoadActor = Cast<APM_RoadActor>(ActorPoolerSubsystem->RequestActor(InitData.RoadClass));
-	NewRoadActor->SetActorLocation(FVector(GetQuantizedPosition(InitData.RoadFrontBufferIndex), 0.f, 0.f));
-	RoadActors.Add(NewRoadActor);
+		APM_RoadActor* NewRoadActor = Cast<APM_RoadActor>(ActorPoolerSubsystem->RequestActor(InitData.RoadClass));
+		NewRoadActor->SetActorLocation(FVector(GetQuantizedPosition(InitData.RoadFrontBufferIndex), 0.f, 0.f));
+		RoadActors.Add(NewRoadActor);
+	}
+
+	{ /* Obstacle spawning system. We don't use a timer so we can set obstacle timing for ramping difficulty. */
+		if (!bAllowObstacleSpawn || CurrentWorld->GetTimeSeconds() < NextObstacleSpawnTime) return;
+		NextObstacleSpawnTime = GetWorld()->GetTimeSeconds() + InitData.ObstacleSpawnInterval;
+		SpawnObstacle();
+	}
+}
+
+/* --- PRIVATE --- */
+
+void UPM_RoadSubsystem::SpawnObstacle()
+{
+	const TSubclassOf<APM_RoadObstacleActor> ObstacleClass = InitData.RoadObstacleTypes[FMath::RandRange(0, InitData.RoadObstacleTypes.Num() - 1)];
+	APM_RoadObstacleActor* Obstacle = ActorPoolerSubsystem->RequestActor<APM_RoadObstacleActor>(ObstacleClass, true);
+
+	const APM_RoadActor* LastRoadActor = RoadActors.Last().Get();
+	
+	FVector SpawnLocation = LastRoadActor->GetActorLocation();
+	SpawnLocation.X += FMath::RandRange(-InitData.ObstacleSpawnHalfRange.X, InitData.ObstacleSpawnHalfRange.X);
+	SpawnLocation.Y += FMath::RandRange(-InitData.ObstacleSpawnHalfRange.Y, InitData.ObstacleSpawnHalfRange.Y);
+	SpawnLocation.Z = InitData.RoadSurfaceLevel;
+
+	Obstacle->SetActorLocation(SpawnLocation);
 }
