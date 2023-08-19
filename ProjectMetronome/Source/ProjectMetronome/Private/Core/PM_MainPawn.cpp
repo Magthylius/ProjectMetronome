@@ -18,7 +18,10 @@ APM_MainPawn::APM_MainPawn()
 
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>("CameraComponent");
 	CameraComponent->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
-	CameraComponent->bUsePawnControlRotation = false; 
+	CameraComponent->bUsePawnControlRotation = false;
+
+	DriveMovementComponent = CreateDefaultSubobject<UPM_DriveMovementComponent>("DriveMovementComponent");
+	DriveMovementComponent->SetUpdatedComponent(BodyStaticMesh);
 
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = false;
@@ -43,6 +46,8 @@ void APM_MainPawn::BeginPlay()
 void APM_MainPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	AddMovementInput(FVector::ForwardVector);
 }
 
 /* --- PRIVATE --- */

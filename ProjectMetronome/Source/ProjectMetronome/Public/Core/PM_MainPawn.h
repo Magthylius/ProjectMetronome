@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "PM_DriveMovementComponent.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/Pawn.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -17,6 +18,7 @@ public:
 	APM_MainPawn();
 	
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	virtual UPawnMovementComponent* GetMovementComponent() const override { return DriveMovementComponent; }
 
 	FORCEINLINE UCameraComponent* GetCameraComponent() const { return CameraComponent; }
 	FORCEINLINE USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
@@ -32,4 +34,6 @@ private:
 	TObjectPtr<UCameraComponent> CameraComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess))
 	TObjectPtr<USpringArmComponent> CameraBoom;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess))
+	TObjectPtr<UPM_DriveMovementComponent> DriveMovementComponent;
 };

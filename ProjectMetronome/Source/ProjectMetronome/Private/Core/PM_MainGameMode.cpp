@@ -19,6 +19,12 @@ APM_MainGameMode::APM_MainGameMode()
 void APM_MainGameMode::BeginPlay()
 {
 	Super::BeginPlay();
+	
+}
+
+void APM_MainGameMode::PostLogin(APlayerController* NewPlayer)
+{
+	Super::PostLogin(NewPlayer);
 
 	const UPM_GameInstance* PMGameInstance = GetGameInstance<UPM_GameInstance>();
 	if (!ensure(IsValid(PMGameInstance)))
@@ -27,6 +33,13 @@ void APM_MainGameMode::BeginPlay()
 		return;
 	}
 
+	APM_MainPawn* MainPawn = NewPlayer->GetPawn<APM_MainPawn>();
+	if (!ensure(IsValid(MainPawn)))
+	{
+		UE_LOG(LogPMCore, Error, TEXT("APM_MainGameMode: Invalid main pawn."));
+		return;
+	}
+	
 	UPM_RoadSubsystem* RoadSubsystem = GetWorld()->GetSubsystem<UPM_RoadSubsystem>();
-	RoadSubsystem->StartSubsystem(nullptr, PMGameInstance->GetRoadSubsystemInitData());
+	RoadSubsystem->StartSubsystem(MainPawn, PMGameInstance->GetRoadSubsystemInitData());
 }
