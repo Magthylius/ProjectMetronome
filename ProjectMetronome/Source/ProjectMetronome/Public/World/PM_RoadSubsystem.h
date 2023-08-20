@@ -62,6 +62,13 @@ public:
 protected:
 	virtual void Tick(float DeltaTime) override;
 	
+	/* Road scrolling system. */
+	virtual void TickRoadScrolling();
+	/* Obstacle spawning system. We don't use a timer so we can set obstacle timing for ramping difficulty. */
+	virtual void TickObstacleSpawning();
+	/* Obstacle scoring system. Remove from array when passed, add to score. */
+	virtual void TickObstacleScoring();
+	
 private:
 	UPROPERTY(VisibleInstanceOnly)
 	TObjectPtr<APM_MainPawn> PlayerPawn;
@@ -69,6 +76,9 @@ private:
 	TWeakObjectPtr<UPM_ActorPoolerSubsystem> ActorPoolerSubsystem;
 	UPROPERTY(VisibleInstanceOnly)
 	TArray<TWeakObjectPtr<APM_RoadActor>> RoadActors;
+	UPROPERTY(VisibleInstanceOnly)
+	TArray<TWeakObjectPtr<APM_RoadObstacleActor>> OncomingRoadObstacles;
+	
 	UPROPERTY(VisibleInstanceOnly)
 	FPM_RoadSubsystemInitData InitData;
 

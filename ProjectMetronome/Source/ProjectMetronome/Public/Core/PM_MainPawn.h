@@ -3,13 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "PM_DriveMovementComponent.h"
+#include "Core/PM_DriveMovementComponent.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/Pawn.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "InputMappingContext.h"
 #include "InputAction.h"
-#include "PM_MainHUD.h"
 #include "PM_MainPawn.generated.h"
 
 /* Player's main pawn. */
@@ -25,6 +24,8 @@ public:
 	virtual UPawnMovementComponent* GetMovementComponent() const override { return DriveMovementComponent; }
 	
 	void TakeSlowDamage(const float SlowDamage);
+
+	FORCEINLINE float GetDistance() const { return GetActorLocation().X; }
 
 	FORCEINLINE UCameraComponent* GetCameraComponent() const { return CameraComponent; }
 	FORCEINLINE USpringArmComponent* GetCameraBoom() const { return CameraBoom; }

@@ -71,30 +71,53 @@ void UPM_RoadSubsystem::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	const UWorld* CurrentWorld = GetWorld();
-	if (!bAllowObservation || !IsValid(PlayerPawn) || !IsValid(CurrentWorld)) return;
+	if (!bAllowObservation || !IsValid(PlayerPawn) || !IsValid(GetWorld())) return;
 
-	{ /* Road scrolling system. */
-		//! Road actors work in a queue system. That means the first one is always the oldest one.
-		if (RoadActors.Num() <= 0) return;
+	TickRoadScrolling();
+	TickObstacleSpawning();
+	TickObstacleScoring();
+}
 
-		const float BackBuffer = PlayerPawn->GetActorLocation().X + InitData.RoadBackBuffer;
-		APM_RoadActor* RoadActor = RoadActors[0].Get();
+void UPM_RoadSubsystem::TickRoadScrolling()
+{
+	//! Road actors work in a queue system. That means the first one is always the oldest one.
+	if (RoadActors.Num() <= 0) return;
 
-		if (RoadActor->GetActorLocation().X > BackBuffer) return;
+	const float BackBuffer = PlayerPawn->GetActorLocation().X + InitData.RoadBackBuffer;
+	APM_RoadActor* RoadActor = RoadActors[0].Get();
 
-		RoadActor->ReturnAllOwnedActors();
-		RoadActors.RemoveAt(0);
-		ActorPoolerSubsystem->ReturnActor(RoadActor);
+	if (RoadActor->GetActorLocation().X > BackBuffer) return;
 
-		APM_RoadActor* NewRoadActor = Cast<APM_RoadActor>(ActorPoolerSubsystem->RequestActor(InitData.RoadClass));
-		NewRoadActor->SetActorLocation(FVector(GetQuantizedPosition(InitData.RoadFrontBufferIndex), 0.f, 0.f));
-		RoadActors.Add(NewRoadActor);
-	}
+	RoadActor->ReturnAllOwnedActors();
+	RoadActors.RemoveAt(0);
+	ActorPoolerSubsystem->ReturnActor(RoadActor);
 
-	{ /* Obstacle spawning system. We don't use a timer so we can set obstacle timing for ramping difficulty. */
-		if (!bAllowObstacleSpawn || CurrentWorld->GetTimeSeconds() < NextObstacleSpawnTime) return;
-		NextObstacleSpawnTime = GetWorld()->GetTimeSeconds() + InitData.ObstacleSpawnInterval;
-		SpawnObstacle();
+	APM_RoadActor* NewRoadActor = Cast<APM_RoadActor>(ActorPoolerSubsystem->RequestActor(InitData.RoadClass));
+	NewRoadActor->SetActorLocation(FVector(GetQuantizedPosition(InitData.RoadFrontBufferIndex), 0.f, 0.f));
+	RoadActors.Add(NewRoadActor);
+}
+
+void UPM_RoadSubsystem::TickObstacleSpawning()
+{
+	if (!bAllowObstacleSpawn || GetWorld()->GetTimeSeconds() < NextObstacleSpawnTime) return;
+	NextObstacleSpawnTime = GetWorld()->GetTimeSeconds() + InitData.ObstacleSpawnInterval;
+	SpawnObstacle();
+}
+
+void UPM_RoadSubsystem::TickObstacleScoring()
+{
+	for (int i = OncomingRoadObstacles.Num() - 1; i >= 0; i--)
+	{
+		TWeakObjectPtr<APM_RoadObstacleActor> RoadObstacle = OncomingRoadObstacles[i];
+
+		//! Player pawn has passed obstacle
+		if (RoadObstacle->GetDistance() < PlayerPawn->GetDistance())
+		{
+			OncomingRoadObstacles.Remove(RoadObstacle);
+			FPM_ScoreSystem::NotifyObstaclePassed();
+			UE_LOG(LogPMWorld, Verbose, TEXT("UPM_RoadSubsystem: Road obstacle '%s' passed at %f against %f."),
+				*RoadObstacle->GetName(), RoadObstacle->GetDistance(), PlayerPawn->GetDistance());
+		}
 	}
 }
 
@@ -121,6 +144,8 @@ void UPM_RoadSubsystem::SpawnObstacle()
 	
 	Obstacle->SetOwningRoad(LastRoadActor);
 	Obstacle->SetActorLocation(SpawnLocation);
+
+	OncomingRoadObstacles.Add(Obstacle);
 }
 
 void UPM_RoadSubsystem::OnObstacleCollided(APM_RoadObstacleActor* ObstacleActor) const

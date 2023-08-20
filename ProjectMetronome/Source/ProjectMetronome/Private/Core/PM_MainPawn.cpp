@@ -63,8 +63,6 @@ void APM_MainPawn::BeginPlay()
 		UE_LOG(LogPMCore, Error, TEXT("APM_MainPawn: Invalid main player controller."));
 		return;
 	}
-
-	APM_MainHUD* MainHUD = MainPlayerController->GetHUD<APM_MainHUD>();
 	
 	UEnhancedInputLocalPlayerSubsystem* InputSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(MainPlayerController->GetLocalPlayer());
 	if (!ensure(IsValid(InputSubsystem)))
@@ -83,7 +81,7 @@ void APM_MainPawn::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	AddActorLocalOffset(FVector::ForwardVector * FPM_GameSettings::ForwardSpeed);
-	FPM_ScoreSystem::SetTotalDistance(GetActorLocation().X);
+	FPM_ScoreSystem::SetTotalDistance(GetDistance());
 }
 
 /* --- PRIVATE --- */
