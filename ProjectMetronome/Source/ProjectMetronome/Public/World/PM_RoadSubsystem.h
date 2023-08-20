@@ -17,9 +17,6 @@ struct FPM_RoadSubsystemInitData
 
 public:
 	UPROPERTY(EditAnywhere)
-	float RoadSurfaceLevel = 200.f;
-	
-	UPROPERTY(EditAnywhere)
 	TSubclassOf<APM_RoadActor> RoadClass;
 	UPROPERTY(EditAnywhere)
 	int RoadTileAmount = 8;
@@ -43,6 +40,8 @@ public:
 	FVector2D ObstacleSpawnHalfRange = FVector2D(250.f, 1000.f);
 	UPROPERTY(EditAnywhere)
 	float ObstacleSpawnDistance = 5000.f;
+	UPROPERTY(EditAnywhere)
+	float ObstacleSpawnHeight = 1000.f;
 };
 
 /* Subsystem that handles road tiling and object creation. */

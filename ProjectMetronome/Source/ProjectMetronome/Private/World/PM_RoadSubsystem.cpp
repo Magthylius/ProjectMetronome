@@ -146,7 +146,7 @@ void UPM_RoadSubsystem::SpawnObstacle()
 	//FVector SpawnLocation;
 	SpawnLocation.X += FMath::RandRange(-InitData.ObstacleSpawnHalfRange.X, InitData.ObstacleSpawnHalfRange.X) + InitData.ObstacleSpawnDistance;
 	SpawnLocation.Y = FMath::RandRange(-InitData.ObstacleSpawnHalfRange.Y, InitData.ObstacleSpawnHalfRange.Y);
-	SpawnLocation.Z = InitData.RoadSurfaceLevel;
+	SpawnLocation.Z = InitData.ObstacleSpawnHeight;
 
 	APM_RoadActor* LastRoadActor = RoadActors.Last().Get();
 
@@ -157,6 +157,7 @@ void UPM_RoadSubsystem::SpawnObstacle()
 		UnownedRoadObstacles.Add(Obstacle);
 	
 	Obstacle->SetActorLocation(SpawnLocation);
+	Obstacle->AddActorLocalOffset(FVector::DownVector * InitData.ObstacleSpawnHeight, true);
 	OncomingRoadObstacles.Add(Obstacle);
 }
 
