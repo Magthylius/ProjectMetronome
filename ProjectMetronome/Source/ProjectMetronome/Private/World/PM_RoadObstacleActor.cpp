@@ -13,7 +13,17 @@ void APM_RoadObstacleActor::SetActive(const bool bActiveState)
 	bIsActive = bActiveState;
 	SetActorHiddenInGame(!bActiveState);
 	SetActorEnableCollision(bActiveState);
+	ReturnHandle.Invalidate();
 }
+
+void APM_RoadObstacleActor::StartReturnCountdown(UPM_ActorPoolerSubsystem* PoolerSubsystem, const float Countdown)
+{
+	if (Countdown < 0.f) return;
+	GetWorld()->GetTimerManager().SetTimer(ReturnHandle, [this, PoolerSubsystem] { PoolerSubsystem->ReturnActor(this);}, Countdown, false);
+	UE_LOG(LogPMWorld, Display, TEXT("APM_RoadObstacleActor: Has started return countdown."));
+}
+
+/* --- PROTECTED --- */
 
 void APM_RoadObstacleActor::OnActorWasHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse,	const FHitResult& Hit)
 {
@@ -27,6 +37,14 @@ void APM_RoadObstacleActor::OnActorWasHit(AActor* SelfActor, AActor* OtherActor,
 	if (OtherActor == MainPawn)
 	{
 		MainPawn->TakeSlowDamage(GetSlowDamage());
+
+		//! Detach from owning road so it doesn't get returned to the pooler
+		if (OwningRoadActor.IsValid()) //! TODO:
+		{
+			OwningRoadActor.Get()->RemoveOwnedActor(this);
+			UE_LOG(LogPMWorld, Display, TEXT("APM_RoadObstacleActor: Self removed from owning actor."));
+		}
+		
 		OnMainPawnHit(MainPawn);
 		OnMainPawnCollided.Broadcast(this);
 	}

@@ -17,11 +17,22 @@ void APM_RoadActor::AddOwnedActor(AActor* OwnedActor)
 {
 	if (!IsValid(OwnedActor) || !OwnedActor->Implements<UPM_PoolableActorInterface>())
 	{
-		UE_LOG(LogPMWorld, Warning, TEXT("APM_RoadActor: Owned actor is invalid."));
+		UE_LOG(LogPMWorld, Warning, TEXT("APM_RoadActor: Failed to add owned actor, is invalid."));
+		return;
+	}
+	
+	OwnedActors.Add(OwnedActor);
+}
+
+void APM_RoadActor::RemoveOwnedActor(AActor* OwnedActor)
+{
+	if (!IsValid(OwnedActor) || !OwnedActors.Contains(OwnedActor))
+	{
+		UE_LOG(LogPMWorld, Warning, TEXT("APM_RoadActor: Failed to remove owned actor, is invalid."));
 		return;
 	}
 
-	OwnedActors.Add(OwnedActor);
+	OwnedActors.Remove(OwnedActor);
 }
 
 void APM_RoadActor::ReturnAllOwnedActors()

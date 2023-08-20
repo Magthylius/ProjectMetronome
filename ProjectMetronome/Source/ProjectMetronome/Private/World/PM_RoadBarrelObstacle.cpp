@@ -3,9 +3,6 @@
 
 #include "World/PM_RoadBarrelObstacle.h"
 
-#include "ProjectMetronome.h"
-#include "Shell/PM_LogUtil.h"
-
 APM_RoadBarrelObstacle::APM_RoadBarrelObstacle()
 {
 	BodyStaticMesh = CreateDefaultSubobject<UStaticMeshComponent>("BodyStaticMesh");
@@ -27,6 +24,7 @@ void APM_RoadBarrelObstacle::SetActive(const bool bActiveState)
 	BodyStaticMesh->SetSimulatePhysics(bActiveState);
 	BodyStaticMesh->SetPhysicsLinearVelocity(FVector::ZeroVector);
 	BodyStaticMesh->SetPhysicsAngularVelocityInDegrees(FVector::ZeroVector);
+	SetActorRotation(FRotator::ZeroRotator);
 }
 
 void APM_RoadBarrelObstacle::OnMainPawnHit(APM_MainPawn* MainPawn)

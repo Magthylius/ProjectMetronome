@@ -17,6 +17,7 @@ public:
 	APM_RoadActor();
 
 	void AddOwnedActor(AActor* OwnedActor);
+	void RemoveOwnedActor(AActor* OwnedActor);
 	void ReturnAllOwnedActors();
 	
 protected:

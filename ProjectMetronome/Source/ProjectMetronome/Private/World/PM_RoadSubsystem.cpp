@@ -118,21 +118,15 @@ void UPM_RoadSubsystem::SpawnObstacle()
 	SpawnLocation.Y += FMath::RandRange(-InitData.ObstacleSpawnHalfRange.Y, InitData.ObstacleSpawnHalfRange.Y);
 	SpawnLocation.Z = InitData.RoadSurfaceLevel;
 	LastRoadActor->AddOwnedActor(Obstacle);
-
+	
+	Obstacle->SetOwningRoad(LastRoadActor);
 	Obstacle->SetActorLocation(SpawnLocation);
 }
 
 void UPM_RoadSubsystem::OnObstacleCollided(APM_RoadObstacleActor* ObstacleActor) const
 {
+	//! NOTE: ObstacleActor handles its own detachment from owning road 
 	ObstacleActor->OnMainPawnCollided.RemoveAll(this);
-
-	auto ReturnActorDelegate = [this, ObstacleActor]()
-	{
-		ActorPoolerSubsystem->ReturnActor(ObstacleActor);
-	};
-	
-	FTimerHandle DisposableHandle;
-	GetWorld()->GetTimerManager().SetTimer(DisposableHandle, ReturnActorDelegate, 3.f, false);
-
+	ObstacleActor->StartReturnCountdown(ActorPoolerSubsystem.Get(), 3.f);
 	FPM_ScoreSystem::NotifyObstacleHit();
 }

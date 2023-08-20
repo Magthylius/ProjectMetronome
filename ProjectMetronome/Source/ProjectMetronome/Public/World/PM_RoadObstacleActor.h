@@ -3,8 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "PM_PoolableActorInterface.h"
 #include "Core/PM_MainPawn.h"
+#include "World/PM_ActorPoolerSubsystem.h"
+#include "World/PM_PoolableActorInterface.h"
+#include "World/PM_RoadActor.h"
 #include "PM_RoadObstacleActor.generated.h"
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FPM_MainPawnCollisionEvent, class APM_RoadObstacleActor* ObstacleActor);
@@ -14,6 +16,8 @@ UCLASS(Abstract)
 class PROJECTMETRONOME_API APM_RoadObstacleActor : public AActor, public IPM_PoolableActorInterface
 {
 	GENERATED_BODY()
+
+	friend class APM_RoadActor;
 
 public:
 	FPM_MainPawnCollisionEvent OnMainPawnCollided;
@@ -25,13 +29,20 @@ public:
 
 	FORCEINLINE virtual float GetSlowDamage() const { return SlowDamage; }
 
+	virtual void SetOwningRoad(APM_RoadActor* RoadActor) { OwningRoadActor = RoadActor; }
+	void StartReturnCountdown(UPM_ActorPoolerSubsystem* PoolerSubsystem, const float Countdown);
+
 protected:
 	virtual void OnMainPawnHit(APM_MainPawn* MainPawn) { }
 
 private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Settings", meta = (AllowPrivateAccess))
 	float SlowDamage;
-	
+
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Runtime Data", meta = (AllowPrivateAccess))
+	TWeakObjectPtr<APM_RoadActor> OwningRoadActor;
+
+	FTimerHandle ReturnHandle;
 	bool bIsActive;
 
 	UFUNCTION(BlueprintCosmetic)
