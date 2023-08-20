@@ -26,13 +26,13 @@ void APM_RoadObstacleActor::SetOwningRoad(APM_RoadActor* RoadActor)
 void APM_RoadObstacleActor::StartReturnCountdown(UPM_ActorPoolerSubsystem* PoolerSubsystem, const float Countdown)
 {
 	if (Countdown < 0.f) return;
-	GetWorld()->GetTimerManager().SetTimer(ReturnHandle, [this, PoolerSubsystem] { PoolerSubsystem->ReturnActor(this);}, Countdown, false);
-	UE_LOG(LogPMWorld, Display, TEXT("APM_RoadObstacleActor: Has started return countdown."));
+	GetWorld()->GetTimerManager().SetTimer(ReturnHandle, [this, PoolerSubsystem] { PoolerSubsystem->ReturnActor(this); }, Countdown, false);
+	UE_LOG(LogPMWorld, Log, TEXT("APM_RoadObstacleActor: Has started return countdown."));
 }
 
 /* --- PROTECTED --- */
 
-void APM_RoadObstacleActor::OnActorWasHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse,	const FHitResult& Hit)
+void APM_RoadObstacleActor::OnActorWasHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit)
 {
 	const UWorld* CurrentWorld = GetWorld();
 	if (!IsValid(CurrentWorld)) return;
@@ -50,9 +50,9 @@ void APM_RoadObstacleActor::OnActorWasHit(AActor* SelfActor, AActor* OtherActor,
 		if (OwningRoadActor.IsValid()) //! TODO:
 		{
 			OwningRoadActor.Get()->RemoveOwnedActor(this);
-			UE_LOG(LogPMWorld, Display, TEXT("APM_RoadObstacleActor: Self removed from owning actor."));
+			UE_LOG(LogPMWorld, Log, TEXT("APM_RoadObstacleActor: Self removed from owning actor."));
 		}
-		
+
 		OnMainPawnHit(MainPawn);
 		OnMainPawnCollided.Broadcast(this);
 	}

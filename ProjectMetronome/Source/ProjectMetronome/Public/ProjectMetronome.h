@@ -5,4 +5,5 @@
 #include "CoreMinimal.h"
 
 DECLARE_LOG_CATEGORY_EXTERN(LogPMCore, All, All);
-DECLARE_LOG_CATEGORY_EXTERN(LogPMWorld, All, All);
+
+DECLARE_LOG_CATEGORY_EXTERN(LogPMWorld, Display, All);
