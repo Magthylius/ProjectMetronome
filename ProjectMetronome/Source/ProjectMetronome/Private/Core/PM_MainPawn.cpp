@@ -20,6 +20,7 @@ APM_MainPawn::APM_MainPawn()
 	CameraBoom->SetUsingAbsoluteRotation(true);
 	CameraBoom->SetRelativeRotation(FRotator(-90.f, 0.f, 0.f));
 	CameraBoom->SetupAttachment(RootComponent);
+	CameraBoom->bEnableCameraLag = true;
 	CameraBoom->TargetArmLength = 3500.f;
 	CameraBoom->SocketOffset = FVector(0, 0, 1000.f);
 
@@ -33,7 +34,7 @@ APM_MainPawn::APM_MainPawn()
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = false;
 	bUseControllerRotationRoll = false;
-	
+
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = true;
 }
@@ -65,7 +66,7 @@ void APM_MainPawn::BeginPlay()
 		UE_LOG(LogPMCore, Error, TEXT("APM_MainPawn: Invalid main player controller."));
 		return;
 	}
-	
+
 	UEnhancedInputLocalPlayerSubsystem* InputSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(MainPlayerController->GetLocalPlayer());
 	if (!ensure(IsValid(InputSubsystem)))
 	{
@@ -84,7 +85,7 @@ void APM_MainPawn::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	CurrentSpeed = FMath::Min(CurrentSpeed + FPM_GameSettings::PlayerForwardAcceleration * DeltaTime, CurrentSpeedCap);
-	
+
 	AddActorLocalOffset(FVector::ForwardVector * CurrentSpeed);
 	FPM_ScoreSystem::SetTotalDistance(GetDistance());
 }

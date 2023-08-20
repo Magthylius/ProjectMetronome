@@ -26,15 +26,21 @@ public:
 	
 	virtual void SetActive(const bool bActiveState) override;
 	virtual bool IsActive() const override { return bIsActive; }
-
-	FORCEINLINE virtual float GetSlowDamage() const { return SlowDamage; }
-
-	virtual float GetDistance() const { return GetActorLocation().X; }
+	
 	virtual void SetOwningRoad(APM_RoadActor* RoadActor);
 	virtual void StartReturnCountdown(UPM_ActorPoolerSubsystem* PoolerSubsystem, const float Countdown);
 
+	FORCEINLINE virtual float GetSlowDamage() const { return SlowDamage; }
+	FORCEINLINE virtual float GetDistance() const { return GetActorLocation().X; }
+
+	FORCEINLINE void NotifyObstacleSpawned() { OnObstacleSpawned(); }
+
 protected:
+	virtual void OnActorPoolRequested() override { }
+	virtual void OnActorPoolReturned() override { }
+	
 	virtual void OnMainPawnHit(APM_MainPawn* MainPawn) { }
+	virtual void OnObstacleSpawned() { }
 
 private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Settings", meta = (AllowPrivateAccess))

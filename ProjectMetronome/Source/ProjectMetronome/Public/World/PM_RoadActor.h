@@ -28,6 +28,9 @@ protected:
 	virtual void SetActive(const bool bActiveState) override;
 	virtual bool IsActive() const override { return bIsActive; }
 
+	virtual void OnActorPoolRequested() override { }
+	virtual void OnActorPoolReturned() override { } 
+
 private:
 	TArray<TWeakObjectPtr<AActor>> OwnedActors;
 	bool bIsActive = false;

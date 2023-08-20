@@ -56,7 +56,9 @@ AActor* UPM_ActorPoolerSubsystem::RequestActor(const TSubclassOf<AActor> ActorCl
 		else return nullptr;
 	}
 
-	return ActorInstanceMap[ActorClass].ActivateNewActor();
+	AActor* RequestedActor = ActorInstanceMap[ActorClass].ActivateNewActor();
+	Cast<IPM_PoolableActorInterface>(RequestedActor)->OnActorPoolRequested();
+	return RequestedActor;
 }
 
 bool UPM_ActorPoolerSubsystem::ReturnActor(AActor* Actor)
@@ -70,6 +72,7 @@ bool UPM_ActorPoolerSubsystem::ReturnActor(AActor* Actor)
 		else return false;
 	}
 
+	Cast<IPM_PoolableActorInterface>(Actor)->OnActorPoolReturned();
 	ActorInstanceMap[ActorClass].DeactivateActor(Actor);
 	return true;
 }

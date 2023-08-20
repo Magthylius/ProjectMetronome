@@ -23,4 +23,7 @@ class PROJECTMETRONOME_API IPM_PoolableActorInterface
 public:
 	virtual void SetActive(const bool bActiveState) = 0;
 	virtual bool IsActive() const = 0;
+
+	virtual void OnActorPoolRequested() = 0;
+	virtual void OnActorPoolReturned() = 0;
 };
