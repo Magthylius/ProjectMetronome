@@ -38,13 +38,14 @@ protected:
 
 private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Settings", meta = (AllowPrivateAccess))
-	float SlowDamage;
+	float SlowDamage = 5.f;
 
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Runtime Data", meta = (AllowPrivateAccess))
 	TWeakObjectPtr<APM_RoadActor> OwningRoadActor;
 
 	FTimerHandle ReturnHandle;
 	bool bIsActive;
+	bool bHasBeenCollided;
 
 	UFUNCTION(BlueprintCosmetic)
 	virtual void OnActorWasHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit);

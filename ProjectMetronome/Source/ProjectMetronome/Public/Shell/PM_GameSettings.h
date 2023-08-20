@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "UObject/NoExportTypes.h"
 #include "PM_GameSettings.generated.h"
 
 
@@ -13,9 +12,10 @@ struct PROJECTMETRONOME_API FPM_GameSettings
 	GENERATED_BODY()
 
 public:
-	inline static float PlayerSpeed = 2000.f;
-	inline static float PlayerAcceleration = 4000.f;
-	inline static float ForwardSpeed = 20.f;
+	inline static float PlayerLateralSpeed = 2000.f;
+	inline static float PlayerLateralAcceleration = 4000.f;
+	inline static float PlayerForwardSpeedCap = 20.f;
+	inline static float PlayerForwardAcceleration = 5.f;
 	inline static float ObstacleScore = 20.f;
 	inline static float ObstaclePenalty = 50.f;
 	inline static float ObstacleReturnTime = 1.f;
@@ -24,11 +24,11 @@ public:
 
 private:
 	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess))
-	float DefaultPlayerSpeed = 2000.f;
+	float DefaultPlayerLateralSpeed = 2000.f;
 	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess))
-	float DefaultPlayerAcceleration = 4000.f;
+	float DefaultPlayerLateralAcceleration = 4000.f;
 	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess))
-	float DefaultForwardSpeed = 20.f;
+	float DefaultPlayerForwardSpeedCap = 20.f;
 	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess))
 	float DefaultObstacleScore = 20.f;
 	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess))

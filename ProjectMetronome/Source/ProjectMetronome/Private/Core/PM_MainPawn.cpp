@@ -49,6 +49,7 @@ void APM_MainPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 
 void APM_MainPawn::TakeSlowDamage(const float SlowDamage)
 {
+	CurrentSpeed = FMath::Max(CurrentSpeed - SlowDamage, 0.f);
 }
 
 /* --- PROTECTED --- */
@@ -72,15 +73,18 @@ void APM_MainPawn::BeginPlay()
 	}
 
 	InputSubsystem->AddMappingContext(PlayerMappingContext, 0);
-	DriveMovementComponent->MaxSpeed = FPM_GameSettings::PlayerSpeed;
-	DriveMovementComponent->Acceleration = FPM_GameSettings::PlayerAcceleration;
+	DriveMovementComponent->MaxSpeed = FPM_GameSettings::PlayerLateralSpeed;
+	DriveMovementComponent->Acceleration = FPM_GameSettings::PlayerLateralAcceleration;
+	CurrentSpeedCap = FPM_GameSettings::PlayerForwardSpeedCap;
 }
 
 void APM_MainPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	AddActorLocalOffset(FVector::ForwardVector * FPM_GameSettings::ForwardSpeed);
+	CurrentSpeed = FMath::Min(CurrentSpeed + FPM_GameSettings::PlayerForwardAcceleration * DeltaTime, CurrentSpeedCap);
+	
+	AddActorLocalOffset(FVector::ForwardVector * CurrentSpeed);
 	FPM_ScoreSystem::SetTotalDistance(GetDistance());
 }
 

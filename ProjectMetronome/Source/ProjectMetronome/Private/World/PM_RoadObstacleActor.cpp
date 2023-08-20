@@ -14,6 +14,7 @@ void APM_RoadObstacleActor::SetActive(const bool bActiveState)
 	SetActorHiddenInGame(!bActiveState);
 	SetActorEnableCollision(bActiveState);
 	ReturnHandle.Invalidate();
+	bHasBeenCollided = false;
 }
 
 void APM_RoadObstacleActor::StartReturnCountdown(UPM_ActorPoolerSubsystem* PoolerSubsystem, const float Countdown)
@@ -34,8 +35,9 @@ void APM_RoadObstacleActor::OnActorWasHit(AActor* SelfActor, AActor* OtherActor,
 	if (!IsValid(PlayerController)) return;
 
 	APM_MainPawn* MainPawn = PlayerController->GetPawn<APM_MainPawn>();
-	if (OtherActor == MainPawn)
+	if (OtherActor == MainPawn && !bHasBeenCollided)
 	{
+		bHasBeenCollided = true;
 		MainPawn->TakeSlowDamage(GetSlowDamage());
 
 		//! Detach from owning road so it doesn't get returned to the pooler
