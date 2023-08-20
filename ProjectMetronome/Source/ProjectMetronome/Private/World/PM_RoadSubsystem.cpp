@@ -127,6 +127,6 @@ void UPM_RoadSubsystem::OnObstacleCollided(APM_RoadObstacleActor* ObstacleActor)
 {
 	//! NOTE: ObstacleActor handles its own detachment from owning road 
 	ObstacleActor->OnMainPawnCollided.RemoveAll(this);
-	ObstacleActor->StartReturnCountdown(ActorPoolerSubsystem.Get(), 3.f);
+	ObstacleActor->StartReturnCountdown(ActorPoolerSubsystem.Get(), FPM_GameSettings::ObstacleReturnTime);
 	FPM_ScoreSystem::NotifyObstacleHit();
 }

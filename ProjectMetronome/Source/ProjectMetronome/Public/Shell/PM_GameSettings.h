@@ -17,6 +17,7 @@ public:
 	inline static float PlayerAcceleration = 4000.f;
 	inline static float ForwardSpeed = 20.f;
 	inline static float ObstaclePenalty = 50.f;
+	inline static float ObstacleReturnTime = 1.f;
 	
 	void ApplyStatics() const;
 
@@ -29,4 +30,6 @@ private:
 	float DefaultForwardSpeed = 20.f;
 	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess))
 	float DefaultObstaclePenalty = 20.f;
+	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess))
+	float DefaultObstacleReturnTime = 1.f;
 };
