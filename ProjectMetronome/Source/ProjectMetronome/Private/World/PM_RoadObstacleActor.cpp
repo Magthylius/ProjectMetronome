@@ -17,6 +17,12 @@ void APM_RoadObstacleActor::SetActive(const bool bActiveState)
 	bHasBeenCollided = false;
 }
 
+void APM_RoadObstacleActor::SetOwningRoad(APM_RoadActor* RoadActor)
+{
+	RoadActor->AddOwnedActor(this);
+	OwningRoadActor = RoadActor;
+}
+
 void APM_RoadObstacleActor::StartReturnCountdown(UPM_ActorPoolerSubsystem* PoolerSubsystem, const float Countdown)
 {
 	if (Countdown < 0.f) return;

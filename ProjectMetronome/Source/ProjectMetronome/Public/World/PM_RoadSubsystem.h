@@ -22,14 +22,14 @@ public:
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<APM_RoadActor> RoadClass;
 	UPROPERTY(EditAnywhere)
-	int RoadTileAmount = 10;
+	int RoadTileAmount = 8;
 	UPROPERTY(EditAnywhere)
 	float RoadTileDistance = 100;
 
 	UPROPERTY(EditAnywhere)
 	float RoadBackBuffer = -5000.f;
 	UPROPERTY(EditAnywhere)
-	int RoadFrontBufferIndex = 3;
+	int RoadFrontBufferIndex = 4;
 
 	UPROPERTY(EditAnywhere)
 	TArray<TSubclassOf<APM_RoadObstacleActor>> RoadObstacleTypes;
@@ -40,7 +40,9 @@ public:
 	UPROPERTY(EditAnywhere)
 	float ObstacleSpawnInterval = 1.f;
 	UPROPERTY(EditAnywhere)
-	FVector2D ObstacleSpawnHalfRange = FVector2D(500.f, 1500.f);
+	FVector2D ObstacleSpawnHalfRange = FVector2D(250.f, 1000.f);
+	UPROPERTY(EditAnywhere)
+	float ObstacleSpawnDistance = 5000.f;
 };
 
 /* Subsystem that handles road tiling and object creation. */
@@ -78,6 +80,8 @@ private:
 	TArray<TWeakObjectPtr<APM_RoadActor>> RoadActors;
 	UPROPERTY(VisibleInstanceOnly)
 	TArray<TWeakObjectPtr<APM_RoadObstacleActor>> OncomingRoadObstacles;
+	UPROPERTY(VisibleInstanceOnly)
+	TArray<TWeakObjectPtr<APM_RoadObstacleActor>> UnownedRoadObstacles;
 	
 	UPROPERTY(VisibleInstanceOnly)
 	FPM_RoadSubsystemInitData InitData;

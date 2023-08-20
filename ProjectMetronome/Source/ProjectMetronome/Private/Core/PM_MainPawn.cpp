@@ -21,6 +21,7 @@ APM_MainPawn::APM_MainPawn()
 	CameraBoom->SetRelativeRotation(FRotator(-90.f, 0.f, 0.f));
 	CameraBoom->SetupAttachment(RootComponent);
 	CameraBoom->TargetArmLength = 3500.f;
+	CameraBoom->SocketOffset = FVector(0, 0, 1000.f);
 
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>("CameraComponent");
 	CameraComponent->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);

@@ -30,7 +30,7 @@ public:
 	FORCEINLINE virtual float GetSlowDamage() const { return SlowDamage; }
 
 	virtual float GetDistance() const { return GetActorLocation().X; }
-	virtual void SetOwningRoad(APM_RoadActor* RoadActor) { OwningRoadActor = RoadActor; }
+	virtual void SetOwningRoad(APM_RoadActor* RoadActor);
 	virtual void StartReturnCountdown(UPM_ActorPoolerSubsystem* PoolerSubsystem, const float Countdown);
 
 protected:

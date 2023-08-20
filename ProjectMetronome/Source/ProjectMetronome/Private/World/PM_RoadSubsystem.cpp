@@ -95,6 +95,13 @@ void UPM_RoadSubsystem::TickRoadScrolling()
 	APM_RoadActor* NewRoadActor = Cast<APM_RoadActor>(ActorPoolerSubsystem->RequestActor(InitData.RoadClass));
 	NewRoadActor->SetActorLocation(FVector(GetQuantizedPosition(InitData.RoadFrontBufferIndex), 0.f, 0.f));
 	RoadActors.Add(NewRoadActor);
+
+	//! Add all unowned obstacles to most recent road actor
+	for (const TWeakObjectPtr<APM_RoadObstacleActor> Obstacle : UnownedRoadObstacles)
+	{
+		Obstacle->SetOwningRoad(NewRoadActor);
+	}
+	UnownedRoadObstacles.Empty();
 }
 
 void UPM_RoadSubsystem::TickObstacleSpawning()
@@ -135,16 +142,21 @@ void UPM_RoadSubsystem::SpawnObstacle()
 	}
 	Obstacle->OnMainPawnCollided.AddUObject(this, &UPM_RoadSubsystem::OnObstacleCollided);
 	
-	APM_RoadActor* LastRoadActor = RoadActors.Last().Get();
-	FVector SpawnLocation = LastRoadActor->GetActorLocation();
-	SpawnLocation.X += FMath::RandRange(-InitData.ObstacleSpawnHalfRange.X, InitData.ObstacleSpawnHalfRange.X);
-	SpawnLocation.Y += FMath::RandRange(-InitData.ObstacleSpawnHalfRange.Y, InitData.ObstacleSpawnHalfRange.Y);
+	FVector SpawnLocation = PlayerPawn->GetActorLocation();
+	//FVector SpawnLocation;
+	SpawnLocation.X += FMath::RandRange(-InitData.ObstacleSpawnHalfRange.X, InitData.ObstacleSpawnHalfRange.X) + InitData.ObstacleSpawnDistance;
+	SpawnLocation.Y = FMath::RandRange(-InitData.ObstacleSpawnHalfRange.Y, InitData.ObstacleSpawnHalfRange.Y);
 	SpawnLocation.Z = InitData.RoadSurfaceLevel;
-	LastRoadActor->AddOwnedActor(Obstacle);
-	
-	Obstacle->SetOwningRoad(LastRoadActor);
-	Obstacle->SetActorLocation(SpawnLocation);
 
+	APM_RoadActor* LastRoadActor = RoadActors.Last().Get();
+
+	//! Obstacle will be before road actor center
+	if (FMath::Abs(SpawnLocation.X - LastRoadActor->GetDistance()) <= InitData.ObstacleSpawnDistance * 0.5f)
+		Obstacle->SetOwningRoad(LastRoadActor);
+	else
+		UnownedRoadObstacles.Add(Obstacle);
+	
+	Obstacle->SetActorLocation(SpawnLocation);
 	OncomingRoadObstacles.Add(Obstacle);
 }
 

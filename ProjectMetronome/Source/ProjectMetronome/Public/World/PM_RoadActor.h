@@ -19,6 +19,8 @@ public:
 	void AddOwnedActor(AActor* OwnedActor);
 	void RemoveOwnedActor(AActor* OwnedActor);
 	void ReturnAllOwnedActors();
+
+	FORCEINLINE float GetDistance() const { return GetActorLocation().X; }
 	
 protected:
 	virtual void BeginPlay() override;
