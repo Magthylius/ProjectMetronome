@@ -64,7 +64,7 @@ void APM_RoadWallObstacle::OnObstacleSpawned()
 {
 	Super::OnObstacleSpawned();
 	OriginalPosition = GetActorLocation();
-	ChangeMovementMode(FMath::RandRange(0, 1) == 0 ? EPM_WallMovementMode::MovingLeft : EPM_WallMovementMode::MovingRight);
+	ChangeMovementMode(FMath::RandBool() ? EPM_WallMovementMode::MovingLeft : EPM_WallMovementMode::MovingRight);
 
 	GetWorld()->GetTimerManager().SetTimer(ChangeMovementHandle, this, &APM_RoadWallObstacle::ToggleMovementMode, InterpolationTime, true);
 }

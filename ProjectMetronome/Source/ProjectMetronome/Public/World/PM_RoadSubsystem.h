@@ -22,11 +22,12 @@ public:
 	int RoadTileAmount = 8;
 	UPROPERTY(EditAnywhere)
 	float RoadTileDistance = 100;
-
 	UPROPERTY(EditAnywhere)
-	float RoadBackBuffer = -5000.f;
+	float RoadVeerDistance = 1000.f;
 	UPROPERTY(EditAnywhere)
-	int RoadFrontBufferIndex = 4;
+	int RoadVeerIndex = 3;
+	UPROPERTY(EditAnywhere)
+	int RoadBackBufferIndex = 2;
 
 	UPROPERTY(EditAnywhere)
 	TArray<TSubclassOf<APM_RoadObstacleActor>> RoadObstacleTypes;
@@ -86,7 +87,8 @@ private:
 	FPM_RoadSubsystemInitData InitData;
 
 	bool bAllowObservation = false;
-
+	float BackBuffer;
+	
 	FTimerHandle ObstacleSpawnHandle;
 	bool bAllowObstacleSpawn = false;
 	float NextObstacleSpawnTime = -1.f;
