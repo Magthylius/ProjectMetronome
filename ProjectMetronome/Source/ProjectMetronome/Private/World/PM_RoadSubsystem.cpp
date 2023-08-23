@@ -95,7 +95,7 @@ void UPM_RoadSubsystem::TickRoadScrolling()
 	const float PlayerDistance = PlayerPawn->GetDistance();
 	
 	APM_RoadActor* FirstRoadActor = RoadActors[0].Get();
-	if (IsValid(FirstRoadActor) && FirstRoadActor->GetDistance() < BackBuffer)
+	if (IsValid(FirstRoadActor) && FirstRoadActor->GetDistance() < PlayerPawn->GetActorLocation().X + BackBuffer)
 	{
 		FirstRoadActor->ReturnAllOwnedActors();
 		RoadActors.RemoveAt(0);
