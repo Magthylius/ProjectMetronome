@@ -17,9 +17,16 @@ void UPM_GameHUDWidget::SetDistance(const float Distance) const
 	DistanceTextBlock->SetText(FText::FromString(DisplayDistance));
 }
 
+void UPM_GameHUDWidget::SetSpeed(const float Speed) const
+{
+	const FString DisplaySpeed = FString::FromInt(FMath::RoundToInt(Speed));
+	SpeedTextBlock->SetText(FText::FromString(DisplaySpeed));
+}
+
 void UPM_GameHUDWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 {
 	Super::NativeTick(MyGeometry, InDeltaTime);
 	SetScoring(FPM_ScoreSystem::CalculateScore());
 	SetDistance(FPM_ScoreSystem::GetTotalDistance());
+	SetSpeed(FPM_ScoreSystem::GetCurrentSpeed());
 }

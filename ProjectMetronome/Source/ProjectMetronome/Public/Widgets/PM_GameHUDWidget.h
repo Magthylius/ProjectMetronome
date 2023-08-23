@@ -18,6 +18,7 @@ class PROJECTMETRONOME_API UPM_GameHUDWidget : public UUserWidget
 public:
 	void SetScoring(const float Scoring) const;
 	void SetDistance(const float Distance) const;
+	void SetSpeed(const float Speed) const;
 
 protected:
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
@@ -27,4 +28,6 @@ private:
 	TObjectPtr<UTextBlock> DistanceTextBlock;
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Components", meta = (BindWidget, AllowPrivateAccess))
 	TObjectPtr<UTextBlock> ScoringTextBlock;
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Components", meta = (BindWidget, AllowPrivateAccess))
+	TObjectPtr<UTextBlock> SpeedTextBlock;
 };

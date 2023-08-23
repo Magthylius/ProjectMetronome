@@ -14,12 +14,14 @@ struct PROJECTMETRONOME_API FPM_ScoreSystem
 
 public:
 	FORCEINLINE static void SetTotalDistance(const float NewTotalDistance) { TotalDistance = NewTotalDistance; }
+	FORCEINLINE static void SetCurrentSpeed(const float NewSpeed) { CurrentSpeed = NewSpeed; }
 	FORCEINLINE static void NotifyObstacleHit() { ObstaclesHit++; }
 	FORCEINLINE static void NotifyObstaclePassed() { ObstaclesPassed++; }
 
 	FORCEINLINE static float GetTotalDistance() { return TotalDistance; }
 	FORCEINLINE static int GetObstaclesHit() { return ObstaclesHit; }
 	FORCEINLINE static int GetObstaclesPassed() { return ObstaclesPassed; }
+	FORCEINLINE static int GetCurrentSpeed() { return CurrentSpeed; }
 	
 	FORCEINLINE static float CalculateScore()
 	{
@@ -37,4 +39,5 @@ private:
 	inline static float TotalDistance = 0;
 	inline static int ObstaclesHit = 0;
 	inline static int ObstaclesPassed = 0;
+	inline static float CurrentSpeed = 0;
 };
