@@ -55,7 +55,10 @@ void APM_RoadActor::ReturnAllOwnedActors()
 
 float APM_RoadActor::PerformChancedVeer()
 {
-	if (!bWantsToVeer && FMath::RandRange(0.f, 1.f) <= VeerChance)
+	const float RandomVeerChance = FMath::RandRange(0.f, 1.f);
+	UE_LOG(LogPMWorld, Warning, TEXT("APM_RoadActor [%s]: Random veer chance %f against %f."), *GetName(), RandomVeerChance, VeerChance);
+
+	if (!bHasVeered && RandomVeerChance <= VeerChance)
 	{
 		bWantsToVeer = true;
 		TargetPosition = GetActorLocation();
@@ -63,6 +66,7 @@ float APM_RoadActor::PerformChancedVeer()
 		return TargetPosition.Y;
 	}
 
+	bHasVeered = true;
 	return GetActorLocation().Y;
 }
 
@@ -76,14 +80,13 @@ void APM_RoadActor::Tick(float DeltaSeconds)
 	const FVector NewLocation = FMath::Lerp(GetActorLocation(), TargetPosition, VeerSpeed * DeltaSeconds);
 	SetActorLocation(NewLocation);
 	
-	/*if (FMath::IsNearlyEqual(GetActorLocation().Y, TargetPosition.Y, 0.1f))
+	if (FMath::IsNearlyEqual(GetActorLocation().Y, TargetPosition.Y, 0.1f))
 	{
 		SetActorLocation(TargetPosition);
 		bWantsToVeer = false;
 	}
-	*/
 	
-	UE_LOG(LogPMWorld, Verbose, TEXT("APM_RoadActor [%s]: Performing veer from %f to %f."), *GetName(), GetActorLocation().Y, TargetPosition.Y);
+	UE_LOG(LogPMWorld, VeryVerbose, TEXT("APM_RoadActor [%s]: Performing veer from %f to %f."), *GetName(), GetActorLocation().Y, TargetPosition.Y);
 }
 
 void APM_RoadActor::SetActive(const bool bActiveState)
@@ -93,6 +96,7 @@ void APM_RoadActor::SetActive(const bool bActiveState)
 	SetActorEnableCollision(bActiveState);
 	SetActorTickEnabled(bActiveState);
 	bWantsToVeer = false;
+	bHasVeered = false;
 }
 
 void APM_RoadActor::OnRoadSpawned()

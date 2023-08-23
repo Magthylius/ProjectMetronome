@@ -5,6 +5,7 @@
 
 #include "ProjectMetronome.h"
 #include "Logging/StructuredLog.h"
+#include "Shell/PM_LogUtil.h"
 #include "Shell/PM_ScoreSystem.h"
 #include "World/PM_ActorPoolerSubsystem.h"
 
@@ -43,6 +44,7 @@ void UPM_RoadSubsystem::StartSubsystem(APM_MainPawn* InPlayerPawn, const FPM_Roa
 
 		//! Negative because the buffer is behind the player
 		BackBuffer = -InitData.RoadBackBufferIndex * InitData.RoadTileDistance;
+		VeerIndex = (InitData.RoadVeerDistance / InitData.RoadTileDistance) + 1;
 	}
 
 	{
@@ -117,10 +119,11 @@ void UPM_RoadSubsystem::TickRoadScrolling()
 		UnownedRoadObstacles.Empty();
 	}
 
-	APM_RoadActor* VeerRoadActor = RoadActors[InitData.RoadVeerIndex].Get();
-	if (IsValid(VeerRoadActor) && VeerRoadActor->GetDistance() < PlayerDistance + InitData.RoadVeerDistance)
+	APM_RoadActor* VeerRoadActor = RoadActors[VeerIndex].Get();
+	if (IsValid(VeerRoadActor) && !VeerRoadActor->GetHasToVeered() && VeerRoadActor->GetDistance() < PlayerDistance + InitData.RoadVeerDistance)
 	{
-		VeerRoadActor->PerformChancedVeer();
+		const float VeerPosition = VeerRoadActor->PerformChancedVeer();
+		LOG(Verbose, FString("Platform veering to ") + FString::SanitizeFloat(VeerPosition))
 	}
 }
 
