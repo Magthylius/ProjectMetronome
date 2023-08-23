@@ -8,7 +8,11 @@ void FPM_GameSettings::ApplyStatics() const
 	PlayerLateralSpeed = DefaultPlayerLateralSpeed;
 	PlayerLateralAcceleration = DefaultPlayerLateralAcceleration;
 	PlayerForwardSpeedCap = DefaultPlayerForwardSpeedCap;
+	
 	ObstacleScore = DefaultObstacleScore;
 	ObstaclePenalty = DefaultObstaclePenalty;
 	ObstacleReturnTime = DefaultObstacleReturnTime;
+
+	CameraDistance = DefaultCameraDistance;
+	CameraOffset = DefaultCameraOffset;
 }

@@ -16,23 +16,35 @@ public:
 	inline static float PlayerLateralAcceleration = 4000.f;
 	inline static float PlayerForwardSpeedCap = 20.f;
 	inline static float PlayerForwardAcceleration = 5.f;
+	
 	inline static float ObstacleScore = 20.f;
 	inline static float ObstaclePenalty = 50.f;
 	inline static float ObstacleReturnTime = 1.f;
+
+	inline static float CameraDistance = 5000.f;
+	inline static float CameraOffset = 1500.f;
 	
 	void ApplyStatics() const;
 
 private:
 	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess))
-	float DefaultPlayerLateralSpeed = 2000.f;
+	float DefaultPlayerLateralSpeed = PlayerLateralSpeed;
 	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess))
-	float DefaultPlayerLateralAcceleration = 4000.f;
+	float DefaultPlayerLateralAcceleration = PlayerLateralAcceleration;
 	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess))
-	float DefaultPlayerForwardSpeedCap = 20.f;
+	float DefaultPlayerForwardSpeedCap = PlayerForwardSpeedCap;
 	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess))
-	float DefaultObstacleScore = 20.f;
+	float DefaultPlayerForwardAcceleration = PlayerForwardAcceleration;
+	
 	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess))
-	float DefaultObstaclePenalty = 50.f;
+	float DefaultObstacleScore = ObstacleScore;
 	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess))
-	float DefaultObstacleReturnTime = 1.f;
+	float DefaultObstaclePenalty = ObstaclePenalty;
+	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess))
+	float DefaultObstacleReturnTime = ObstacleReturnTime;
+
+	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess))
+	float DefaultCameraDistance = CameraDistance;
+	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess))
+	float DefaultCameraOffset = CameraOffset;
 };

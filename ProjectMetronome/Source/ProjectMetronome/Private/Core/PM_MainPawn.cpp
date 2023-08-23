@@ -21,8 +21,8 @@ APM_MainPawn::APM_MainPawn()
 	CameraBoom->SetRelativeRotation(FRotator(-90.f, 0.f, 0.f));
 	CameraBoom->SetupAttachment(RootComponent);
 	CameraBoom->bEnableCameraLag = true;
-	CameraBoom->TargetArmLength = 3500.f;
-	CameraBoom->SocketOffset = FVector(0, 0, 1000.f);
+	CameraBoom->TargetArmLength = FPM_GameSettings::CameraDistance;
+	CameraBoom->SocketOffset = FVector(0, 0, FPM_GameSettings::CameraOffset);
 
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>("CameraComponent");
 	CameraComponent->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);

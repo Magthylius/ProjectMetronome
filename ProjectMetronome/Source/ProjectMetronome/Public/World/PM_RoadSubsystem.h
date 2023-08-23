@@ -25,6 +25,8 @@ public:
 	UPROPERTY(EditAnywhere)
 	float RoadVeerDistance = 1000.f;
 	UPROPERTY(EditAnywhere)
+	float RoadVeeringStartDelay = 5.f;
+	UPROPERTY(EditAnywhere)
 	int RoadBackBufferIndex = 2;
 
 	UPROPERTY(EditAnywhere)
@@ -86,6 +88,9 @@ private:
 
 	bool bAllowObservation = false;
 	float BackBuffer;
+
+	FTimerHandle RoadVeeringHandle;
+	bool bAllowRoadVeering = false;
 	int VeerIndex;
 	
 	FTimerHandle ObstacleSpawnHandle;

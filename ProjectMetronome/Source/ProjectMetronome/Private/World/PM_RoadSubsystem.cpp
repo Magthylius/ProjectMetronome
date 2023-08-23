@@ -54,12 +54,11 @@ void UPM_RoadSubsystem::StartSubsystem(APM_MainPawn* InPlayerPawn, const FPM_Roa
 			const TSubclassOf<APM_RoadObstacleActor> ObstacleClass = InitData.RoadObstacleTypes[i];
 			ActorPoolerSubsystem->CreateActors(ObstacleClass, InitData.ObstaclePoolAmount);
 
-			auto AllowObstacleSpawning = [this]
-			{
-				bAllowObstacleSpawn = true;
-			};
+			auto AllowObstacleSpawning = [this] { bAllowObstacleSpawn = true; };
+			auto AllowRoadVeering = [this] { bAllowRoadVeering = true; };
 
 			GetWorld()->GetTimerManager().SetTimer(ObstacleSpawnHandle, AllowObstacleSpawning, InitData.ObstacleStartSpawnDelay, false);
+			GetWorld()->GetTimerManager().SetTimer(RoadVeeringHandle, AllowRoadVeering, InitData.RoadVeeringStartDelay, false);
 		}
 	}
 
@@ -119,11 +118,14 @@ void UPM_RoadSubsystem::TickRoadScrolling()
 		UnownedRoadObstacles.Empty();
 	}
 
-	APM_RoadActor* VeerRoadActor = RoadActors[VeerIndex].Get();
-	if (IsValid(VeerRoadActor) && !VeerRoadActor->GetHasToVeered() && VeerRoadActor->GetDistance() < PlayerDistance + InitData.RoadVeerDistance)
+	if (bAllowRoadVeering)
 	{
-		const float VeerPosition = VeerRoadActor->PerformChancedVeer();
-		LOG(Verbose, FString("Platform veering to ") + FString::SanitizeFloat(VeerPosition))
+		APM_RoadActor* VeerRoadActor = RoadActors[VeerIndex].Get();
+		if (IsValid(VeerRoadActor) && !VeerRoadActor->GetHasToVeered() && VeerRoadActor->GetDistance() < PlayerDistance + InitData.RoadVeerDistance)
+		{
+			const float VeerPosition = VeerRoadActor->PerformChancedVeer();
+			LOG(Verbose, FString("Platform veering to ") + FString::SanitizeFloat(VeerPosition))
+		}
 	}
 }
 
