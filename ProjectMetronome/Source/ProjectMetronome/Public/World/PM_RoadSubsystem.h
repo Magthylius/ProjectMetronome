@@ -40,7 +40,7 @@ public:
 	UPROPERTY(EditAnywhere)
 	FVector2D ObstacleSpawnHalfRange = FVector2D(250.f, 1000.f);
 	UPROPERTY(EditAnywhere)
-	float ObstacleSpawnDistance = 5000.f;
+	float ObstacleSpawnDistance = 7000.f;
 	UPROPERTY(EditAnywhere)
 	float ObstacleSpawnHeight = 1000.f;
 };

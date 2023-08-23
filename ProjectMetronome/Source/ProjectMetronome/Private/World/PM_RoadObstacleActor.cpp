@@ -30,6 +30,36 @@ void APM_RoadObstacleActor::StartReturnCountdown(UPM_ActorPoolerSubsystem* Poole
 	UE_LOG(LogPMWorld, Log, TEXT("APM_RoadObstacleActor: Has started return countdown."));
 }
 
+void APM_RoadObstacleActor::PerformRandomSpawnEffects()
+{
+	if (bWantsRandomSize)
+	{
+		FVector RandomSize;
+		RandomSize.X = FMath::RandRange(MinRandomSize.X, MaxRandomSize.X);
+		RandomSize.Y = FMath::RandRange(MinRandomSize.Y, MaxRandomSize.Y);
+		RandomSize.Z = FMath::RandRange(MinRandomSize.Z, MaxRandomSize.Z);
+
+		SetActorScale3D(OriginalScale * RandomSize);
+	}
+
+	if (bWantsRandomColor)
+	{
+		const int RandomColorIndex = FMath::RandRange(0, RandomColorRange.Num() - 1);
+		OnSetColor(RandomColorRange[RandomColorIndex]);
+	}
+}
+
+void APM_RoadObstacleActor::BeginPlay()
+{
+	Super::BeginPlay();
+	OriginalScale = GetActorScale();
+}
+
+void APM_RoadObstacleActor::OnObstacleSpawned()
+{
+
+}
+
 /* --- PROTECTED --- */
 
 void APM_RoadObstacleActor::OnActorWasHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit)

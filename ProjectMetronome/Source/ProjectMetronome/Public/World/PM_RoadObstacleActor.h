@@ -30,25 +30,42 @@ public:
 	virtual void SetOwningRoad(APM_RoadActor* RoadActor);
 	virtual void StartReturnCountdown(UPM_ActorPoolerSubsystem* PoolerSubsystem, const float Countdown);
 
+	void PerformRandomSpawnEffects();
+	
 	FORCEINLINE virtual float GetSlowDamage() const { return SlowDamage; }
 	FORCEINLINE virtual float GetDistance() const { return GetActorLocation().X; }
 
 	FORCEINLINE void NotifyObstacleSpawned() { OnObstacleSpawned(); }
 
 protected:
+	virtual void BeginPlay() override;
+	
 	virtual void OnActorPoolRequested() override { }
 	virtual void OnActorPoolReturned() override { }
 	
 	virtual void OnMainPawnHit(APM_MainPawn* MainPawn) { }
-	virtual void OnObstacleSpawned() { }
+	virtual void OnObstacleSpawned();
+	virtual void OnSetColor(const FColor Color) { }
 
 private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Settings", meta = (AllowPrivateAccess))
 	float SlowDamage = 5.f;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Settings | Random Spawn Settings", meta = (AllowPrivateAccess))
+	bool bWantsRandomSize;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Settings | Random Spawn Settings", meta = (AllowPrivateAccess, EditCondition = "bWantsRandomSize", EditConditionHides))
+	FVector MinRandomSize = FVector::One();
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Settings | Random Spawn Settings", meta = (AllowPrivateAccess, EditCondition = "bWantsRandomSize", EditConditionHides))
+	FVector MaxRandomSize = FVector::One() * 2;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Settings | Random Spawn Settings", meta = (AllowPrivateAccess))
+	bool bWantsRandomColor;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Settings | Random Spawn Settings", meta = (AllowPrivateAccess, EditCondition = "bWantsRandomColor", EditConditionHides))
+	TArray<FColor> RandomColorRange;
 
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Runtime Data", meta = (AllowPrivateAccess))
 	TWeakObjectPtr<APM_RoadActor> OwningRoadActor;
 
+	FVector OriginalScale;
+	
 	FTimerHandle ReturnHandle;
 	bool bIsActive;
 	bool bHasBeenCollided;

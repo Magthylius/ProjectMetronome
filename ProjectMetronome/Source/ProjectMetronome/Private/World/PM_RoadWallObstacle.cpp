@@ -63,10 +63,22 @@ void APM_RoadWallObstacle::OnMainPawnHit(APM_MainPawn* MainPawn)
 void APM_RoadWallObstacle::OnObstacleSpawned()
 {
 	Super::OnObstacleSpawned();
+	BodyStaticMesh->SetAllPhysicsLinearVelocity(FVector::ZeroVector);
+	BodyStaticMesh->SetAllPhysicsAngularVelocityInDegrees(FVector::ZeroVector);
 	OriginalPosition = GetActorLocation();
 	ChangeMovementMode(FMath::RandBool() ? EPM_WallMovementMode::MovingLeft : EPM_WallMovementMode::MovingRight);
 
 	GetWorld()->GetTimerManager().SetTimer(ChangeMovementHandle, this, &APM_RoadWallObstacle::ToggleMovementMode, InterpolationTime, true);
+}
+
+void APM_RoadWallObstacle::OnSetColor(const FColor Color)
+{
+	Super::OnSetColor(Color);
+	UMaterialInstanceDynamic* Material = Cast<UMaterialInstanceDynamic>(BodyStaticMesh->GetMaterial(0));
+	if (IsValid(Material))
+	{
+		Material->SetVectorParameterValue("Color", Color);
+	}
 }
 
 /* --- PRIVATE --- */

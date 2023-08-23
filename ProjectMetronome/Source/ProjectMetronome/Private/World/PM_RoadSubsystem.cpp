@@ -179,6 +179,7 @@ void UPM_RoadSubsystem::SpawnObstacle()
 	else UnownedRoadObstacles.Add(Obstacle);
 
 	Obstacle->SetActorLocation(SpawnLocation);
+	Obstacle->PerformRandomSpawnEffects();
 	Obstacle->AddActorLocalOffset(FVector::DownVector * InitData.ObstacleSpawnHeight, true);
 	Obstacle->NotifyObstacleSpawned();
 	OncomingRoadObstacles.Add(Obstacle);

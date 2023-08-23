@@ -37,3 +37,13 @@ void APM_RoadBarrelObstacle::OnMainPawnHit(APM_MainPawn* MainPawn)
 	CrashVector += BodyStaticMesh->GetUpVector() * CrashForce;
 	BodyStaticMesh->SetPhysicsLinearVelocity(CrashVector);
 }
+
+void APM_RoadBarrelObstacle::OnSetColor(const FColor Color)
+{
+	Super::OnSetColor(Color);
+	UMaterialInstanceDynamic* Material = Cast<UMaterialInstanceDynamic>(BodyStaticMesh->GetMaterial(0));
+	if (IsValid(Material))
+	{
+		Material->SetVectorParameterValue("Color", Color);
+	}
+}

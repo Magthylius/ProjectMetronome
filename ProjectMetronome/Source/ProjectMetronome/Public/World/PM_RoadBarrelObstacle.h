@@ -21,6 +21,7 @@ public:
 
 protected:
 	virtual void OnMainPawnHit(APM_MainPawn* MainPawn) override;
+	virtual void OnSetColor(const FColor Color) override;
 	
 private:
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess))
