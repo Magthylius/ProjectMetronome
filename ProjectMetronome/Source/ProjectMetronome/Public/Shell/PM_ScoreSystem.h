@@ -27,7 +27,9 @@ public:
 	
 	FORCEINLINE static float CalculateScore()
 	{
-		return (ObstaclesPassed * FPM_GameSettings::ObstacleScore) - (ObstaclesHit * FPM_GameSettings::ObstaclePenalty);
+		return (ObstaclesPassed * FPM_GameSettings::ObstacleScore) -
+				(ObstaclesHit * FPM_GameSettings::ObstaclePenalty) -
+				(TimesFellOff * FPM_GameSettings::FellOffPenalty);
 	}
 
 	FORCEINLINE static void ResetStats()

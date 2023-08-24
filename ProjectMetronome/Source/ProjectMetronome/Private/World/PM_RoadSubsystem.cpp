@@ -162,6 +162,8 @@ void UPM_RoadSubsystem::TickPlayerKillZone()
 	FPM_ScoreSystem::NotifyFellOff();
 	PlayerPawn->SetActorLocation(FVector(PlayerLocation.X, 0.f, InitData.RespawnHeight), false, nullptr, ETeleportType::ResetPhysics);
 	PlayerPawn->ResetSpeed();
+
+	OncomingRoadObstacles.Empty();
 	for (const TWeakObjectPtr<APM_RoadActor> RoadActor : RoadActors)
 	{
 		RoadActor->ReturnAllOwnedActors();
