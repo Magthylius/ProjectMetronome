@@ -86,6 +86,7 @@ void UPM_RoadSubsystem::Tick(float DeltaTime)
 	TickRoadScrolling();
 	TickObstacleSpawning();
 	TickObstacleScoring();
+	TickPlayerKillZone();
 }
 
 void UPM_RoadSubsystem::TickRoadScrolling()
@@ -151,6 +152,29 @@ void UPM_RoadSubsystem::TickObstacleScoring()
 			       *RoadObstacle->GetName(), RoadObstacle->GetDistance(), PlayerPawn->GetDistance());
 		}
 	}
+}
+
+void UPM_RoadSubsystem::TickPlayerKillZone()
+{
+	const FVector PlayerLocation = PlayerPawn->GetActorLocation();
+	if (PlayerLocation.Z > InitData.KillZoneHeight) return;
+
+	FPM_ScoreSystem::NotifyFellOff();
+	PlayerPawn->SetActorLocation(FVector(PlayerLocation.X, 0.f, InitData.RespawnHeight), false, nullptr, ETeleportType::ResetPhysics);
+	PlayerPawn->ResetSpeed();
+	for (const TWeakObjectPtr<APM_RoadActor> RoadActor : RoadActors)
+	{
+		RoadActor->ReturnAllOwnedActors();
+	}
+
+	bAllowRoadVeering = false;
+	bAllowObstacleSpawn = false;
+
+	auto AllowObstacleSpawning = [this] { bAllowObstacleSpawn = true; };
+	auto AllowRoadVeering = [this] { bAllowRoadVeering = true; };
+
+	GetWorld()->GetTimerManager().SetTimer(ObstacleSpawnHandle, AllowObstacleSpawning, InitData.ObstacleStartSpawnDelay, false);
+	GetWorld()->GetTimerManager().SetTimer(RoadVeeringHandle, AllowRoadVeering, InitData.RoadVeeringStartDelay, false);
 }
 
 /* --- PRIVATE --- */

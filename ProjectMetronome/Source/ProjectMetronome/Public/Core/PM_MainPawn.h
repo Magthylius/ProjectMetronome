@@ -24,7 +24,8 @@ public:
 	virtual UPawnMovementComponent* GetMovementComponent() const override { return DriveMovementComponent; }
 	
 	void TakeSlowDamage(const float SlowDamage);
-
+	void ResetSpeed() { CurrentSpeed = 0.f; }
+	
 	FORCEINLINE float GetDistance() const { return GetActorLocation().X; }
 
 	FORCEINLINE UCameraComponent* GetCameraComponent() const { return CameraComponent; }

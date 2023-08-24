@@ -89,6 +89,7 @@ void APM_MainPawn::Tick(float DeltaTime)
 	FPM_ScoreSystem::SetCurrentSpeed((CurrentSpeed / CurrentSpeedCap) * 100.f);
 
 	AddActorLocalOffset(FVector::ForwardVector * CurrentSpeed);
+	AddActorLocalOffset(FVector::DownVector * 10.f, true);
 	FPM_ScoreSystem::SetTotalDistance(GetDistance());
 }
 

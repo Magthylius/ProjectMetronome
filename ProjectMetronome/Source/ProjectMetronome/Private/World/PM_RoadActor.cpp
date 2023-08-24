@@ -56,7 +56,7 @@ void APM_RoadActor::ReturnAllOwnedActors()
 float APM_RoadActor::PerformChancedVeer()
 {
 	const float RandomVeerChance = FMath::RandRange(0.f, 1.f);
-	UE_LOG(LogPMWorld, Warning, TEXT("APM_RoadActor [%s]: Random veer chance %f against %f."), *GetName(), RandomVeerChance, VeerChance);
+	UE_LOG(LogPMWorld, Log, TEXT("APM_RoadActor [%s]: Random veer chance %f against %f."), *GetName(), RandomVeerChance, VeerChance);
 
 	if (!bHasVeered && RandomVeerChance <= VeerChance)
 	{

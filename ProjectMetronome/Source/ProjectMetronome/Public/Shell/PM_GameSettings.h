@@ -20,6 +20,7 @@ public:
 	inline static float ObstacleScore = 20.f;
 	inline static float ObstaclePenalty = 50.f;
 	inline static float ObstacleReturnTime = 1.f;
+	inline static float FellOffPenalty = 1000.0;
 
 	inline static float CameraDistance = 5000.f;
 	inline static float CameraOffset = 1500.f;
@@ -42,7 +43,9 @@ private:
 	float DefaultObstaclePenalty = ObstaclePenalty;
 	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess))
 	float DefaultObstacleReturnTime = ObstacleReturnTime;
-
+	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess))
+	float DefaultFellOffPenalty = FellOffPenalty;
+	
 	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess))
 	float DefaultCameraDistance = CameraDistance;
 	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess))

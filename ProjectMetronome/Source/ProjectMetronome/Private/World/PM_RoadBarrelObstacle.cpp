@@ -6,7 +6,7 @@
 APM_RoadBarrelObstacle::APM_RoadBarrelObstacle()
 {
 	BodyStaticMesh = CreateDefaultSubobject<UStaticMeshComponent>("BodyStaticMesh");
-	BodyStaticMesh->SetEnableGravity(false);
+	BodyStaticMesh->SetEnableGravity(true);
 	BodyStaticMesh->SetMobility(EComponentMobility::Movable);
 	BodyStaticMesh->SetSimulatePhysics(true);
 	BodyStaticMesh->SetNotifyRigidBodyCollision(true);
@@ -16,11 +16,7 @@ APM_RoadBarrelObstacle::APM_RoadBarrelObstacle()
 void APM_RoadBarrelObstacle::SetActive(const bool bActiveState)
 {
 	Super::SetActive(bActiveState);
-	if (!bActiveState)
-	{
-		BodyStaticMesh->SetEnableGravity(false);
-	}
-
+	BodyStaticMesh->SetEnableGravity(bActiveState);
 	BodyStaticMesh->SetSimulatePhysics(bActiveState);
 	BodyStaticMesh->SetPhysicsLinearVelocity(FVector::ZeroVector);
 	BodyStaticMesh->SetPhysicsAngularVelocityInDegrees(FVector::ZeroVector);

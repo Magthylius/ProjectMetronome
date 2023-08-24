@@ -43,6 +43,11 @@ public:
 	float ObstacleSpawnDistance = 7000.f;
 	UPROPERTY(EditAnywhere)
 	float ObstacleSpawnHeight = 1000.f;
+
+	UPROPERTY(EditAnywhere)
+	float KillZoneHeight = -1000.f;
+	UPROPERTY(EditAnywhere)
+	float RespawnHeight = 500.f;
 };
 
 /* Subsystem that handles road tiling and object creation. */
@@ -70,6 +75,8 @@ protected:
 	virtual void TickObstacleSpawning();
 	/* Obstacle scoring system. Remove from array when passed, add to score. */
 	virtual void TickObstacleScoring();
+	/* Obstacle scoring system. Remove from array when passed, add to score. */
+	virtual void TickPlayerKillZone();
 	
 private:
 	UPROPERTY(VisibleInstanceOnly)
@@ -96,7 +103,7 @@ private:
 	FTimerHandle ObstacleSpawnHandle;
 	bool bAllowObstacleSpawn = false;
 	float NextObstacleSpawnTime = -1.f;
-
+	
 	void SpawnObstacle();
 
 	void OnObstacleCollided(APM_RoadObstacleActor* ObstacleActor) const;

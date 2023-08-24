@@ -12,7 +12,8 @@ void FPM_GameSettings::ApplyStatics() const
 	ObstacleScore = DefaultObstacleScore;
 	ObstaclePenalty = DefaultObstaclePenalty;
 	ObstacleReturnTime = DefaultObstacleReturnTime;
-
+	FellOffPenalty = DefaultFellOffPenalty;
+	
 	CameraDistance = DefaultCameraDistance;
 	CameraOffset = DefaultCameraOffset;
 }
