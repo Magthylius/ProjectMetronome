@@ -71,9 +71,15 @@ void APM_RoadWallObstacle::OnObstacleSpawned()
 	GetWorld()->GetTimerManager().SetTimer(ChangeMovementHandle, this, &APM_RoadWallObstacle::ToggleMovementMode, InterpolationTime, true);
 }
 
-void APM_RoadWallObstacle::OnSetColor(const FColor Color)
+void APM_RoadWallObstacle::OnSpawnRandomSize(const FVector RandomSizeMultiplier)
 {
-	Super::OnSetColor(Color);
+	Super::OnSpawnRandomSize(RandomSizeMultiplier);
+	SetActorScale3D(GetOriginalScale() * RandomSizeMultiplier);
+}
+
+void APM_RoadWallObstacle::OnSpawnRandomColor(const FColor Color)
+{
+	Super::OnSpawnRandomColor(Color);
 	UMaterialInstanceDynamic* Material = Cast<UMaterialInstanceDynamic>(BodyStaticMesh->GetMaterial(0));
 	if (IsValid(Material))
 	{

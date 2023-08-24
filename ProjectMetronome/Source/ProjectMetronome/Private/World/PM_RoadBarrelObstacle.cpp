@@ -38,9 +38,16 @@ void APM_RoadBarrelObstacle::OnMainPawnHit(APM_MainPawn* MainPawn)
 	BodyStaticMesh->SetPhysicsLinearVelocity(CrashVector);
 }
 
-void APM_RoadBarrelObstacle::OnSetColor(const FColor Color)
+void APM_RoadBarrelObstacle::OnSpawnRandomSize(const FVector RandomSizeMultiplier)
 {
-	Super::OnSetColor(Color);
+	Super::OnSpawnRandomSize(RandomSizeMultiplier);
+	
+	SetActorScale3D(GetOriginalScale() * FVector(RandomSizeMultiplier.X, RandomSizeMultiplier.X, RandomSizeMultiplier.Z));
+}
+
+void APM_RoadBarrelObstacle::OnSpawnRandomColor(const FColor Color)
+{
+	Super::OnSpawnRandomColor(Color);
 	UMaterialInstanceDynamic* Material = Cast<UMaterialInstanceDynamic>(BodyStaticMesh->GetMaterial(0));
 	if (IsValid(Material))
 	{

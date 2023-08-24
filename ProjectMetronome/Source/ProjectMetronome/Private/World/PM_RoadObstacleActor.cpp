@@ -38,14 +38,13 @@ void APM_RoadObstacleActor::PerformRandomSpawnEffects()
 		RandomSize.X = FMath::RandRange(MinRandomSize.X, MaxRandomSize.X);
 		RandomSize.Y = FMath::RandRange(MinRandomSize.Y, MaxRandomSize.Y);
 		RandomSize.Z = FMath::RandRange(MinRandomSize.Z, MaxRandomSize.Z);
-
-		SetActorScale3D(OriginalScale * RandomSize);
+		OnSpawnRandomSize(RandomSize);
 	}
 
 	if (bWantsRandomColor)
 	{
 		const int RandomColorIndex = FMath::RandRange(0, RandomColorRange.Num() - 1);
-		OnSetColor(RandomColorRange[RandomColorIndex]);
+		OnSpawnRandomColor(RandomColorRange[RandomColorIndex]);
 	}
 }
 

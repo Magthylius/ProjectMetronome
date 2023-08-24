@@ -45,7 +45,11 @@ protected:
 	
 	virtual void OnMainPawnHit(APM_MainPawn* MainPawn) { }
 	virtual void OnObstacleSpawned();
-	virtual void OnSetColor(const FColor Color) { }
+
+	virtual void OnSpawnRandomSize(const FVector RandomSizeMultiplier) { }
+	virtual void OnSpawnRandomColor(const FColor Color) { }
+
+	FORCEINLINE FVector GetOriginalScale() const { return OriginalScale; }
 
 private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Settings", meta = (AllowPrivateAccess))
