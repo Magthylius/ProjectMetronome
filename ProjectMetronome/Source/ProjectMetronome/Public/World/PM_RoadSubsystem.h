@@ -59,10 +59,11 @@ class PROJECTMETRONOME_API UPM_RoadSubsystem : public UTickableWorldSubsystem
 public:
 	virtual TStatId GetStatId() const override { return TStatId(); } 
 
-	void StartSubsystem(APM_MainPawn* InPlayerPawn, const FPM_RoadSubsystemInitData& InInitData);
+	void BeginGameplay();
+	void SetupSubsystem(APM_MainPawn* InPlayerPawn, const FPM_RoadSubsystemInitData& InInitData);
 	
 	FORCEINLINE void SetPlayerPawn(APM_MainPawn* InPlayerPawn) { PlayerPawn = InPlayerPawn; }
-	FORCEINLINE void SetAllowObservation(const bool bAllow) { bAllowObservation = bAllow; }
+	FORCEINLINE void SetAllowObservation(const bool bAllow) { bAllowTicking = bAllow; }
 
 	FORCEINLINE float GetQuantizedPosition(const int OffsetIndex) const;
 
@@ -93,7 +94,7 @@ private:
 	UPROPERTY(VisibleInstanceOnly)
 	FPM_RoadSubsystemInitData InitData;
 
-	bool bAllowObservation = false;
+	bool bAllowTicking = false;
 	float BackBuffer;
 
 	FTimerHandle RoadVeeringHandle;

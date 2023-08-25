@@ -84,6 +84,8 @@ void APM_MainPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (!bAllowMovement) return;
+
 	//! TODO: Use real delta time
 	CurrentSpeed = FMath::Min(CurrentSpeed + FPM_GameSettings::PlayerForwardAcceleration * DeltaTime, CurrentSpeedCap);
 	FPM_ScoreSystem::SetCurrentSpeed((CurrentSpeed / CurrentSpeedCap) * 100.f);

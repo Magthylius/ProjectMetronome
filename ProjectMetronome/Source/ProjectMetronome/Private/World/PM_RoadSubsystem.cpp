@@ -13,7 +13,18 @@
 
 /* --- PUBLIC --- */
 
-void UPM_RoadSubsystem::StartSubsystem(APM_MainPawn* InPlayerPawn, const FPM_RoadSubsystemInitData& InInitData)
+void UPM_RoadSubsystem::BeginGameplay()
+{
+	bAllowTicking = true;
+	
+	auto AllowObstacleSpawning = [this] { bAllowObstacleSpawn = true; };
+	auto AllowRoadVeering = [this] { bAllowRoadVeering = true; };
+
+	GetWorld()->GetTimerManager().SetTimer(ObstacleSpawnHandle, AllowObstacleSpawning, InitData.ObstacleStartSpawnDelay, false);
+	GetWorld()->GetTimerManager().SetTimer(RoadVeeringHandle, AllowRoadVeering, InitData.RoadVeeringStartDelay, false);
+}
+
+void UPM_RoadSubsystem::SetupSubsystem(APM_MainPawn* InPlayerPawn, const FPM_RoadSubsystemInitData& InInitData)
 {
 	if (!ensure(IsValid(InInitData.RoadClass)))
 	{
@@ -53,16 +64,8 @@ void UPM_RoadSubsystem::StartSubsystem(APM_MainPawn* InPlayerPawn, const FPM_Roa
 		{
 			const TSubclassOf<APM_RoadObstacleActor> ObstacleClass = InitData.RoadObstacleTypes[i];
 			ActorPoolerSubsystem->CreateActors(ObstacleClass, InitData.ObstaclePoolAmount);
-
-			auto AllowObstacleSpawning = [this] { bAllowObstacleSpawn = true; };
-			auto AllowRoadVeering = [this] { bAllowRoadVeering = true; };
-
-			GetWorld()->GetTimerManager().SetTimer(ObstacleSpawnHandle, AllowObstacleSpawning, InitData.ObstacleStartSpawnDelay, false);
-			GetWorld()->GetTimerManager().SetTimer(RoadVeeringHandle, AllowRoadVeering, InitData.RoadVeeringStartDelay, false);
 		}
 	}
-
-	bAllowObservation = true;
 }
 
 float UPM_RoadSubsystem::GetQuantizedPosition(const int OffsetIndex) const
@@ -80,8 +83,7 @@ void UPM_RoadSubsystem::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	const UWorld* CurrentWorld = GetWorld();
-	if (!bAllowObservation || !IsValid(PlayerPawn) || !IsValid(GetWorld())) return;
+	if (!bAllowTicking || !IsValid(PlayerPawn) || !IsValid(GetWorld())) return;
 
 	TickRoadScrolling();
 	TickObstacleSpawning();

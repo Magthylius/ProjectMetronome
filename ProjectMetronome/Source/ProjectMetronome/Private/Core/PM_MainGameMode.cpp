@@ -19,12 +19,6 @@ APM_MainGameMode::APM_MainGameMode()
 	PlayerControllerClass = APM_MainPlayerController::StaticClass();
 }
 
-void APM_MainGameMode::BeginPlay()
-{
-	Super::BeginPlay();
-	
-}
-
 void APM_MainGameMode::PostLogin(APlayerController* NewPlayer)
 {
 	Super::PostLogin(NewPlayer);
@@ -47,5 +41,5 @@ void APM_MainGameMode::PostLogin(APlayerController* NewPlayer)
 	}
 	
 	UPM_RoadSubsystem* RoadSubsystem = GetWorld()->GetSubsystem<UPM_RoadSubsystem>();
-	RoadSubsystem->StartSubsystem(MainPawn, PMGameInstance->GetRoadSubsystemInitData());
+	RoadSubsystem->SetupSubsystem(MainPawn, PMGameInstance->GetRoadSubsystemInitData());
 }

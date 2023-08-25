@@ -25,7 +25,8 @@ public:
 	
 	void TakeSlowDamage(const float SlowDamage);
 	void ResetSpeed() { CurrentSpeed = 0.f; }
-	
+
+	FORCEINLINE void SetAllowMovement(const bool bAllow) { bAllowMovement = bAllow; }
 	FORCEINLINE float GetDistance() const { return GetActorLocation().X; }
 
 	FORCEINLINE UCameraComponent* GetCameraComponent() const { return CameraComponent; }
@@ -46,6 +47,8 @@ private:
 	TObjectPtr<UPM_DriveMovementComponent> DriveMovementComponent;
 
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Runtime Data", meta = (AllowPrivateAccess))
+	bool bAllowMovement = false;
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Runtime Data", meta = (AllowPrivateAccess))
 	float CurrentSpeedCap = 0.f;
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Runtime Data", meta = (AllowPrivateAccess))
 	float CurrentSpeed = 0.f;
@@ -55,6 +58,5 @@ private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input References", meta = (AllowPrivateAccess))
 	TObjectPtr<UInputAction> PlayerMoveAction;
 	
-
 	void OnPerformMove(const FInputActionValue& InputValue);
 };
